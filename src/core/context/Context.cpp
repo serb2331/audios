@@ -1,11 +1,21 @@
 #include "Context.h"
+#include <iostream>
+#include <ostream>
 
-Context::Context(int number)
-{
-    this->number = number;
+Context::Context() {
+
+    std::cout << "constructor for context called" << std::endl;
 }
 
-int Context::get_number()
+Context& Context::GetInstance()
 {
-    return this->number;
+    static Context instance;
+    return instance;
+}
+
+
+void Context::setLogging(bool loggingValue)
+{
+    std::cout << "setting logging: " << loggingValue << std::endl;
+    _logging = loggingValue;
 }

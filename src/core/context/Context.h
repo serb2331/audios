@@ -3,9 +3,18 @@
 class Context
 {
 private:
-    int number;
+    Context();
+
+    bool _logging;
 
 public:
-    int get_number();
-    Context(int n);
+
+    static Context& GetInstance();
+
+    // Context can't be copied
+    Context(Context &other) = delete;
+    // COntext can't be assigned
+    void operator=(const Context &other) = delete;
+
+    void setLogging(bool loggingValue);
 };

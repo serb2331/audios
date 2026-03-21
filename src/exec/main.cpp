@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <iostream>
 
 #include "../lib/audio-library.h"
 
@@ -14,9 +13,9 @@ int main(int argc, char **argv) {
     }
     printf("This is project %s.\n", PROJECT_NAME);
 
-    Context sample_context(3);
-
-    cout << "Context usage: " << sample_context.get_number() << "\n\n";
+    Context &libContext = Context::GetInstance();
+    libContext.setLogging(true);
+    libContext.setLogging(false);
 
     return 0;
 }
