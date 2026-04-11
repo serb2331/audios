@@ -1,5 +1,13 @@
 #pragma once
 
+#include <iostream>
+
+#define USE_LOGGING(X)                              \
+{                                                   \
+    if (Context::GetInstance().getLogging())        \
+    std::cout << "AudioLibrary: " << X << std::endl;\
+}                                           
+
 class Context
 {
 private:
@@ -17,4 +25,5 @@ public:
     void operator=(const Context &other) = delete;
 
     void setLogging(bool loggingValue);
+    bool getLogging();
 };

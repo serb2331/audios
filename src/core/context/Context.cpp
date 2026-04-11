@@ -3,8 +3,6 @@
 #include <ostream>
 
 Context::Context() {
-
-    std::cout << "constructor for context called" << std::endl;
 }
 
 Context& Context::GetInstance()
@@ -16,6 +14,7 @@ Context& Context::GetInstance()
 
 void Context::setLogging(bool loggingValue)
 {
-    std::cout << "setting logging: " << loggingValue << std::endl;
     _logging = loggingValue;
 }
+
+bool Context::getLogging() {return _logging;}
