@@ -5,7 +5,7 @@
 #define USE_LOGGING(X)                              \
 {                                                   \
     if (Context::GetInstance().getLogging())        \
-    std::cout << "AudioLibrary: " << X << std::endl;\
+    std::cout << "\033[32m[AudioLibrary]\033[0m " << X << std::endl;\
 }                                           
 
 class Context

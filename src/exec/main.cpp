@@ -18,14 +18,13 @@ int main(int argc, char **argv) {
         printf("%s takes no arguments.\n", argv[0]);
         return 1;
     }
-    printf("This is project %s.\n", PROJECT_NAME);
+    printf("\n\n\nThis is project %s.\n", PROJECT_NAME);
 
     setupProject();
 
     WAVAudioFileDecoder decodec = WAVAudioFileDecoder();
-
-    decodec.openFile("sounds/pluck_test_16bitPCM.wav");
-    decodec.validateHeader();
     
+    // decodec.testDRLIB("/home/serb/Documents/Licenta/wavs/pluck_test_16bitPCM.wav");
+
     return 0;
 }
