@@ -1,8 +1,5 @@
-#include "core/context/Context.h"
-#include "core/file-processing/flac/FLACAudioFileDecoder.h"
-#include "core/file-processing/mp3/MP3AudioFileDecoder.h"
-#include "core/file-processing/wav/WAVAudioFileDecoder.h"
 #include <stdio.h>
+#include "lib/audio-library.h"
 
 #define PROJECT_NAME "audio-library"
 
