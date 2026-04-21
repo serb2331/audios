@@ -1,10 +1,8 @@
 #include "core/context/Context.h"
-#include "core/file-processing/WAVAudioFileDecoder.h"
-#include <iostream>
-#include <memory>
-#include <ostream>
+#include "core/file-processing/flac/FLACAudioFileDecoder.h"
+#include "core/file-processing/mp3/MP3AudioFileDecoder.h"
+#include "core/file-processing/wav/WAVAudioFileDecoder.h"
 #include <stdio.h>
-#include <memory>
 
 #define PROJECT_NAME "audio-library"
 
@@ -22,9 +20,20 @@ int main(int argc, char **argv) {
 
     setupProject();
 
-    WAVAudioFileDecoder decodec = WAVAudioFileDecoder();
+    WAVAudioFileDecoder wav_decodec = WAVAudioFileDecoder();
+    wav_decodec.openFile("./sounds/pluck.wav");
+    wav_decodec.reset();
     
-    // decodec.testDRLIB("/home/serb/Documents/Licenta/wavs/pluck_test_16bitPCM.wav");
+    MP3AudioFileDecoder mp3_decodec = MP3AudioFileDecoder();
+    mp3_decodec.openFile("./sounds/pluck.mp3");
+    mp3_decodec.reset();
+    
+    FLACAudioFileDecoder flac_decodec = FLACAudioFileDecoder();
+    flac_decodec.openFile("./sounds/pluck.flac");
+    flac_decodec.reset();
+    
+    
+    
 
     return 0;
 }

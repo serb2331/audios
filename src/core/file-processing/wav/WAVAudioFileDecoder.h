@@ -1,13 +1,14 @@
 #pragma once
 
-#include "../../external/dr_wav.h"
-#include "../interfaces/file_processing.h"
+#include "../../../external/dr_wav.h"
+#include "core/interfaces/file_processing.h"
+#include <memory>
 
 class WAVAudioFileDecoder : public IAudioFileDecoder
 {
 private:
 
-    drwav *_p_drwav = nullptr;
+    std::unique_ptr<drwav>_p_drwav;
 
 public:
 
