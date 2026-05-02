@@ -1,11 +1,29 @@
 #pragma once
 
+#include <iostream>
+
+#define USE_LOGGING(X)                              \
+{                                                   \
+    if (Context::GetInstance().getLogging())        \
+    std::cout << "\033[32m[AudioLibrary]\033[0m " << X << std::endl;\
+}                                           
+
 class Context
 {
 private:
-    int number;
+    Context();
+
+    bool _logging;
 
 public:
-    int get_number();
-    Context(int n);
+
+    static Context& GetInstance();
+
+    // Context can't be copied
+    Context(Context &other) = delete;
+    // COntext can't be assigned
+    void operator=(const Context &other) = delete;
+
+    void setLogging(bool loggingValue);
+    bool getLogging();
 };

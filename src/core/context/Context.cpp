@@ -1,11 +1,20 @@
 #include "Context.h"
+#include <iostream>
+#include <ostream>
 
-Context::Context(int number)
-{
-    this->number = number;
+Context::Context() {
 }
 
-int Context::get_number()
+Context& Context::GetInstance()
 {
-    return this->number;
+    static Context instance;
+    return instance;
 }
+
+
+void Context::setLogging(bool loggingValue)
+{
+    _logging = loggingValue;
+}
+
+bool Context::getLogging() {return _logging;}
