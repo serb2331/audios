@@ -21,19 +21,19 @@ void FLACAudioFileCodec::reset() { drflac_seek_to_pcm_frame(_drflacP, 0); }
 
 void FLACAudioFileCodec::logFileInformation() {
   if (_isFileInitialized) {
-    USE_LOGGING("=== FLAC File Information ===\n");
-    USE_LOGGING("Channels:          " << (int)_drflacP->channels << "\n");
-    USE_LOGGING("Sample Rate:       " << _drflacP->sampleRate << " Hz\n");
+    USE_LOGGING("=== FLAC File Information ===");
+    USE_LOGGING("Channels:          " << (int)_drflacP->channels);
+    USE_LOGGING("Sample Rate:       " << _drflacP->sampleRate << " Hz");
     USE_LOGGING("Bits Per Sample:   " << (int)_drflacP->bitsPerSample
-                                      << " bits\n");
+                                      << " bits");
     USE_LOGGING("Total PCM Frames:  "
-                << (unsigned long long)_drflacP->totalPCMFrameCount << "\n");
+                << (unsigned long long)_drflacP->totalPCMFrameCount << "");
 
     // Calculate duration
     double duration =
         (double)_drflacP->totalPCMFrameCount / _drflacP->sampleRate;
     USE_LOGGING("Duration:          " << std::setprecision(2) << duration
-                                      << " seconds\n");
+                                      << " seconds");
   }
 }
 
@@ -52,9 +52,12 @@ void FLACAudioFileCodec::dumpContents(u_int32_t framesToDump) {
 
   while (currentFrame < framesToDump && readFrame == 1) {
     readFrame = drflac_read_pcm_frames_f32(_drflacP, 1, bufferOut.data());
-    USE_LOGGING(currentFrame << " " << readFrame << " ");
+    USE_LOGGING(currentFrame << " " << readFrame);
+
+    std::stringstream ss("");
     for (auto value : bufferOut)
-      USE_LOGGING(value);
+      ss << value << ' ';
+    USE_LOGGING(ss.rdbuf());
 
     currentFrame += 1;
   }

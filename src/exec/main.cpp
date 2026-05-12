@@ -1,4 +1,3 @@
-#include "core/file-processing/flac/FLACAudioFileDecoder.h"
 #include "lib/audio-library.h"
 #include <stdio.h>
 
@@ -16,7 +15,7 @@ int main(int argc, char **argv) {
   setupProject();
 
   WAVAudioFileCodec wav_decodec = WAVAudioFileCodec();
-  wav_decodec.openFile("./sounds/pluck.wavvv");
+  wav_decodec.openFile("./sounds/pluck.wav");
   wav_decodec.logFileInformation();
   std::cout << "wav\n\n";
   wav_decodec.dumpContents(10);

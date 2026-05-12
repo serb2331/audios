@@ -1,9 +1,10 @@
 #pragma once
 
+#include "core/interfaces/audio_filtering.h"
 #include <string>
 #include <sys/types.h>
 
-class IAudioFileCodec {
+class IAudioFileCodec : public IAudioFilterSource {
 public:
   virtual bool openFile(std::string filePath) = 0;
 
