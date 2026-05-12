@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../../../external/dr_flac.h"
+#include "../../../external/dr_mp3.h"
 #include "core/interfaces/file_processing.h"
+#include <memory>
 
-class FLACAudioFileDecoder : public IAudioFileDecoder {
+class MP3AudioFileCodec : public IAudioFileCodec {
 private:
-  drflac *_p_drflac = nullptr;
+  std::unique_ptr<drmp3> _drmp3P;
   bool _isFileInitialized = false;
 
 public:
@@ -15,5 +16,7 @@ public:
 
   void logFileInformation() override;
 
-  ~FLACAudioFileDecoder();
+  void dumpContents(u_int32_t framesToDump) override;
+
+  ~MP3AudioFileCodec();
 };

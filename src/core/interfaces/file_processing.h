@@ -1,12 +1,15 @@
 #pragma once
 
 #include <string>
+#include <sys/types.h>
 
-class IAudioFileDecoder {
+class IAudioFileCodec {
 public:
   virtual bool openFile(std::string filePath) = 0;
 
   virtual void reset() = 0;
 
   virtual void logFileInformation() = 0;
+
+  virtual void dumpContents(u_int32_t framesToDump) = 0;
 };

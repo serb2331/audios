@@ -15,21 +15,23 @@ int main(int argc, char **argv) {
 
   setupProject();
 
-  WAVAudioFileDecoder wav_decodec = WAVAudioFileDecoder();
-  wav_decodec.openFile("./sounds/pluck.wav");
+  WAVAudioFileCodec wav_decodec = WAVAudioFileCodec();
+  wav_decodec.openFile("./sounds/pluck.wavvv");
   wav_decodec.logFileInformation();
-  wav_decodec.reset();
-  // wav_decodec.logFileInformation();
+  std::cout << "wav\n\n";
+  wav_decodec.dumpContents(10);
 
-  MP3AudioFileDecoder mp3_decodec = MP3AudioFileDecoder();
+  MP3AudioFileCodec mp3_decodec = MP3AudioFileCodec();
   mp3_decodec.openFile("./sounds/pluck.mp3");
   mp3_decodec.logFileInformation();
-  mp3_decodec.reset();
+  std::cout << "\nmp3\n\n";
+  mp3_decodec.dumpContents(10);
 
-  FLACAudioFileDecoder flac_decodec = FLACAudioFileDecoder();
+  FLACAudioFileCodec flac_decodec = FLACAudioFileCodec();
   flac_decodec.openFile("./sounds/pluck.flac");
   flac_decodec.logFileInformation();
-  flac_decodec.reset();
+  std::cout << "\nflac\n\n";
+  flac_decodec.dumpContents(10);
 
   return 0;
 }

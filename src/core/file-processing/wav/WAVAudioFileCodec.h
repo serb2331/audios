@@ -4,9 +4,9 @@
 #include "core/interfaces/file_processing.h"
 #include <memory>
 
-class WAVAudioFileDecoder : public IAudioFileDecoder {
+class WAVAudioFileCodec : public IAudioFileCodec {
 private:
-  std::unique_ptr<drwav> _p_drwav;
+  std::unique_ptr<drwav> _drwavP;
   bool _isFileInitialized = false;
 
 public:
@@ -16,5 +16,7 @@ public:
 
   void logFileInformation() override;
 
-  ~WAVAudioFileDecoder();
+  void dumpContents(u_int32_t framesToDump) override;
+
+  ~WAVAudioFileCodec();
 };

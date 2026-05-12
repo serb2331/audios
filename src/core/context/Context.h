@@ -2,28 +2,30 @@
 
 #include <iostream>
 
-#define USE_LOGGING(X)                              \
-{                                                   \
-    if (Context::GetInstance().getLogging())        \
-    std::cout << "\033[32m[AudioLibrary]\033[0m " << X << std::endl;\
-}                                           
+#define USE_LOGGING(X)                                                         \
+  {                                                                            \
+    if (Context::GetInstance().getLogging())                                   \
+      std::cout << "\033[32m[AudioLibrary]\033[0m " << X << std::endl;         \
+  }
 
-class Context
-{
+#define USE_LOGGING_ERROR(X)                                                   \
+  {                                                                            \
+    if (Context::GetInstance().getLogging())                                   \
+      std::cout << "\033[31m[AudioLibrary]\033[0m " << X << std::endl;         \
+  }
+
+class Context {
 private:
-    Context();
+  Context();
 
-    bool _logging;
+  bool _logging;
 
 public:
+  static Context &GetInstance();
 
-    static Context& GetInstance();
+  Context(Context &other) = delete;
+  void operator=(const Context &other) = delete;
 
-    // Context can't be copied
-    Context(Context &other) = delete;
-    // COntext can't be assigned
-    void operator=(const Context &other) = delete;
-
-    void setLogging(bool loggingValue);
-    bool getLogging();
+  void setLogging(bool loggingValue);
+  bool getLogging();
 };
