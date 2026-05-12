@@ -15,7 +15,8 @@ lib_sources = [
   'core/file-processing/mp3/MP3AudioFileCodec.cpp',
   'core/dr_wav_source.cpp',
   'core/dr_mp3_source.cpp',
-  'core/dr_flac_source.cpp'
+  'core/dr_flac_source.cpp',
+  'core/filtering/filters.cpp'
 ]
 
 exec_sources = [

@@ -18,5 +18,10 @@ public:
 
   void dumpContents(u_int32_t framesToDump) override;
 
+  //
+
+  u_int32_t getChannelNumber() override final;
+  u_int32_t readFrames(float *frameBuffer, u_int32_t numFrames) override final;
+
   ~WAVAudioFileCodec();
 };

@@ -20,17 +20,17 @@ int main(int argc, char **argv) {
   std::cout << "wav\n\n";
   wav_decodec.dumpContents(10);
 
-  MP3AudioFileCodec mp3_decodec = MP3AudioFileCodec();
-  mp3_decodec.openFile("./sounds/pluck.mp3");
-  mp3_decodec.logFileInformation();
-  std::cout << "\nmp3\n\n";
-  mp3_decodec.dumpContents(10);
+  // MP3AudioFileCodec mp3_decodec = MP3AudioFileCodec();
+  // mp3_decodec.openFile("./sounds/pluck.mp3");
+  // mp3_decodec.logFileInformation();
+  // std::cout << "\nmp3\n\n";
+  // mp3_decodec.dumpContents(10);
 
-  FLACAudioFileCodec flac_decodec = FLACAudioFileCodec();
-  flac_decodec.openFile("./sounds/pluck.flac");
-  flac_decodec.logFileInformation();
-  std::cout << "\nflac\n\n";
-  flac_decodec.dumpContents(10);
+  // FLACAudioFileCodec flac_decodec = FLACAudioFileCodec();
+  // flac_decodec.openFile("./sounds/pluck.flac");
+  // flac_decodec.logFileInformation();
+  // std::cout << "\nflac\n\n";
+  // flac_decodec.dumpContents(10);
 
   return 0;
 }

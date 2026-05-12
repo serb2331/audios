@@ -83,4 +83,15 @@ void WAVAudioFileCodec::dumpContents(u_int32_t framesToDump) {
   }
 }
 
+//
+
+u_int32_t WAVAudioFileCodec::getChannelNumber() { return _drwavP->channels; }
+
+u_int32_t WAVAudioFileCodec::readFrames(float *frameBuffer,
+                                        u_int32_t numFrames) {
+  u_int64_t readFrames =
+      drwav_read_pcm_frames_f32(_drwavP.get(), numFrames, frameBuffer);
+  return readFrames;
+}
+
 WAVAudioFileCodec::~WAVAudioFileCodec() { drwav_uninit(_drwavP.get()); }

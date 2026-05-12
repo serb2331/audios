@@ -14,11 +14,16 @@
       std::cout << "\033[31m[AudioLibrary]\033[0m " << X << std::endl;         \
   }
 
+enum AUDIO_SAMPLE_SIZES {
+
+};
+
 class Context {
 private:
   Context();
 
   bool _logging;
+  u_int32_t _defaultBufferSize = 512;
 
 public:
   static Context &GetInstance();
@@ -28,4 +33,7 @@ public:
 
   void setLogging(bool loggingValue);
   bool getLogging();
+
+  void setBufferSize(u_int32_t size);
+  u_int32_t getBufferSize();
 };
