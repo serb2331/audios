@@ -1,10 +1,12 @@
 #pragma once
 
 #include "../../../external/dr_wav.h"
+#include "core/interfaces/audio_filtering.h"
 #include "core/interfaces/file_processing.h"
 #include <memory>
 
-class WAVAudioFileCodec : public IAudioFileCodec {
+class WAVAudioFileCodec final : public IAudioFileCodec,
+                                public IAudioFilterSource {
 private:
   std::unique_ptr<drwav> _drwavP;
   bool _isFileInitialized = false;

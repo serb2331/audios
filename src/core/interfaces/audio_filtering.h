@@ -2,9 +2,12 @@
 
 #include "core/context/Context.h"
 #include <memory>
+#include <utility>
 
 class IAudioFilterSource {
 public:
+  virtual ~IAudioFilterSource() = default;
+
   virtual u_int32_t readFrames(float *frameBuffer, u_int32_t numFrames) = 0;
   virtual u_int32_t getChannelNumber() = 0;
 };
@@ -15,12 +18,13 @@ private:
   std::unique_ptr<IAudioFilterSource> _pFilterSourceWrapee;
 
 public:
-  AudioFilterBase(IAudioFilterSource *filterWrapee) {
+  AudioFilterBase(std::unique_ptr<IAudioFilterSource> filterWrapee) {
     if (!filterWrapee)
       USE_LOGGING_ERROR("Initialized AudioFilter with a null filter source.");
 
-    _pFilterSourceWrapee.reset(filterWrapee);
+    _pFilterSourceWrapee = std::move(filterWrapee);
   }
+  virtual ~AudioFilterBase() = default;
 
   virtual u_int32_t readFrames(float *frameBuffer,
                                u_int32_t numFrames) override {

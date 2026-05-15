@@ -23,7 +23,7 @@ private:
   Context();
 
   bool _logging;
-  u_int32_t _defaultBufferSize = 512;
+  u_int32_t _defaultBufferFrameCount = 512;
 
 public:
   static Context &GetInstance();
@@ -34,6 +34,6 @@ public:
   void setLogging(bool loggingValue);
   bool getLogging();
 
-  void setBufferSize(u_int32_t size);
-  u_int32_t getBufferSize();
+  void setBufferFrameCount(u_int32_t size);
+  u_int32_t getBufferFrameCount();
 };

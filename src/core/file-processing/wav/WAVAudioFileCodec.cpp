@@ -72,11 +72,12 @@ void WAVAudioFileCodec::dumpContents(u_int32_t framesToDump) {
 
   while (currentFrame < framesToDump && readFrame == 1) {
     readFrame = drwav_read_pcm_frames_f32(_drwavP.get(), 1, bufferOut.data());
-    USE_LOGGING(currentFrame << " " << readFrame);
 
     std::stringstream ss("");
+    ss << currentFrame << " ";
     for (auto value : bufferOut)
       ss << value << ' ';
+
     USE_LOGGING(ss.rdbuf());
 
     currentFrame += 1;
@@ -85,10 +86,22 @@ void WAVAudioFileCodec::dumpContents(u_int32_t framesToDump) {
 
 //
 
-u_int32_t WAVAudioFileCodec::getChannelNumber() { return _drwavP->channels; }
+u_int32_t WAVAudioFileCodec::getChannelNumber() {
+  if (!_isFileInitialized) {
+    USE_LOGGING_ERROR("Error getting channel number of uninitialized decoder.")
+    return 0;
+  }
+  
+  return _drwavP->channels;
+}
 
 u_int32_t WAVAudioFileCodec::readFrames(float *frameBuffer,
                                         u_int32_t numFrames) {
+  if (!_isFileInitialized) {
+    USE_LOGGING_ERROR("Error reading contents of uninitialized decoder.")
+    return 0;
+  }
+
   u_int64_t readFrames =
       drwav_read_pcm_frames_f32(_drwavP.get(), numFrames, frameBuffer);
   return readFrames;

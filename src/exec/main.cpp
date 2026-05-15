@@ -1,9 +1,18 @@
-#include "lib/audio-library.h"
+#include "../lib/audio-library.h"
+#include "core/context/Context.h"
+#include "core/filtering/filters.h"
+#include <memory>
+#include <sstream>
 #include <stdio.h>
+#include <sys/types.h>
+#include <vector>
 
 #define PROJECT_NAME "audio-library"
 
-static void setupProject() { Context::GetInstance().setLogging(true); }
+static void setupProject() {
+  Context::GetInstance().setLogging(true);
+  Context::GetInstance().setBufferFrameCount(512);
+}
 
 int main(int argc, char **argv) {
   if (argc != 1) {
@@ -14,11 +23,32 @@ int main(int argc, char **argv) {
 
   setupProject();
 
-  WAVAudioFileCodec wav_decodec = WAVAudioFileCodec();
-  wav_decodec.openFile("./sounds/pluck.wav");
-  wav_decodec.logFileInformation();
-  std::cout << "wav\n\n";
-  wav_decodec.dumpContents(10);
+  auto wavDecodecUP = std::make_unique<WAVAudioFileCodec>();
+  wavDecodecUP->openFile("./sounds/pluck.wav");
+  auto wavDecodecP = wavDecodecUP.get();
+
+  std::cout << "wav before filter\n\n";
+  wavDecodecP->logFileInformation();
+  wavDecodecP->dumpContents(10);
+  wavDecodecP->reset();
+
+  const u_int32_t bufferSize = Context::GetInstance().getBufferFrameCount();
+
+  auto filter = std::make_unique<GainAudioFilter>(1.0, std::move(wavDecodecUP));
+
+  auto channelCount = filter->getChannelNumber();
+
+  std::vector<float> exampleBuffer(bufferSize * channelCount, 0.0);
+  auto readFrames = filter->readFrames(exampleBuffer.data(), bufferSize);
+
+  USE_LOGGING("FRAMES READ:" << readFrames);
+  for (int i = 0; i < 10; i += 1) {
+    std::stringstream s("");
+    for (u_int32_t j = 0; j < channelCount; j += 1)
+      s << exampleBuffer[i * channelCount + j] << " ";
+
+    USE_LOGGING(i << " " << s.rdbuf());
+  }
 
   // MP3AudioFileCodec mp3_decodec = MP3AudioFileCodec();
   // mp3_decodec.openFile("./sounds/pluck.mp3");

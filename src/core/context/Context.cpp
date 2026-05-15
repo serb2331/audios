@@ -11,5 +11,7 @@ void Context::setLogging(bool loggingValue) { _logging = loggingValue; }
 
 bool Context::getLogging() { return _logging; }
 
-void Context::setBufferSize(u_int32_t size) { _defaultBufferSize = size; }
-u_int32_t Context::getBufferSize() { return _defaultBufferSize; }
+void Context::setBufferFrameCount(u_int32_t size) {
+  _defaultBufferFrameCount = size;
+}
+u_int32_t Context::getBufferFrameCount() { return _defaultBufferFrameCount; }

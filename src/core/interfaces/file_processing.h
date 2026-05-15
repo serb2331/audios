@@ -4,7 +4,7 @@
 #include <string>
 #include <sys/types.h>
 
-class IAudioFileCodec : public IAudioFilterSource {
+class IAudioFileCodec {
 public:
   virtual bool openFile(std::string filePath) = 0;
 
