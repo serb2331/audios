@@ -64,4 +64,29 @@ void MP3AudioFileCodec::dumpContents(u_int32_t framesToDump) {
   }
 }
 
+//
+
+u_int32_t MP3AudioFileCodec::getChannelNumber() {
+  if (!_isFileInitialized) {
+    USE_LOGGING_ERROR("Error getting channel number of uninitialized decoder.")
+    return 0;
+  }
+
+  return _drmp3P->channels;
+}
+
+u_int32_t MP3AudioFileCodec::readFrames(float *frameBuffer,
+                                        u_int32_t numFrames) {
+  if (!_isFileInitialized) {
+    USE_LOGGING_ERROR("Error reading frames of uninitialized decoder.");
+  }
+
+  u_int64_t readFrames =
+      drmp3_read_pcm_frames_f32(_drmp3P.get(), numFrames, frameBuffer);
+
+  return readFrames;
+}
+
+//
+
 MP3AudioFileCodec::~MP3AudioFileCodec() { drmp3_uninit(_drmp3P.get()); }

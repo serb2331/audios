@@ -63,4 +63,29 @@ void FLACAudioFileCodec::dumpContents(u_int32_t framesToDump) {
   }
 }
 
+//
+
+u_int32_t FLACAudioFileCodec::readFrames(float *frameBuffer,
+                                         u_int32_t numFrames) {
+  if (!_isFileInitialized) {
+    USE_LOGGING_ERROR("Error reading frames of uninitialized decoder.");
+  }
+
+  u_int64_t readFrames =
+      drflac_read_pcm_frames_f32(_drflacP, numFrames, frameBuffer);
+
+  return readFrames;
+}
+
+u_int32_t FLACAudioFileCodec::getChannelNumber() {
+  if (!_isFileInitialized) {
+    USE_LOGGING_ERROR("Error getting channel number of uninitialized decoder.")
+    return 0;
+  }
+
+  return _drflacP->channels;
+}
+
+//
+
 FLACAudioFileCodec::~FLACAudioFileCodec() { drflac_close(_drflacP); }
