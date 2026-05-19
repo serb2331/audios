@@ -1,9 +1,9 @@
-#include "FLACAudioFileCodec.h"
+#include "FLACCodec.h"
 #include "core/context/Context.h"
 #include <iomanip>
 #include <vector>
 
-bool FLACAudioFileCodec::openFile(std::string fileName) {
+bool FLACAudioFileDecoder::initFile(std::string fileName) {
   _drflacP = drflac_open_file(fileName.c_str(), NULL);
 
   if (_drflacP == NULL) {
@@ -17,9 +17,11 @@ bool FLACAudioFileCodec::openFile(std::string fileName) {
   return true;
 }
 
-void FLACAudioFileCodec::reset() { drflac_seek_to_pcm_frame(_drflacP, 0); }
+void FLACAudioFileDecoder::resetPointer() {
+  drflac_seek_to_pcm_frame(_drflacP, 0);
+}
 
-void FLACAudioFileCodec::logFileInformation() {
+void FLACAudioFileDecoder::logFileInformation() {
   if (_isFileInitialized) {
     USE_LOGGING("=== FLAC File Information ===");
     USE_LOGGING("Channels:          " << (int)_drflacP->channels);
@@ -37,7 +39,7 @@ void FLACAudioFileCodec::logFileInformation() {
   }
 }
 
-void FLACAudioFileCodec::dumpContents(u_int32_t framesToDump) {
+void FLACAudioFileDecoder::dumpContents(u_int32_t framesToDump) {
   if (!_isFileInitialized) {
     USE_LOGGING_ERROR("Error dumping contents of uninitialized decoder.")
     return;
@@ -65,8 +67,8 @@ void FLACAudioFileCodec::dumpContents(u_int32_t framesToDump) {
 
 //
 
-u_int32_t FLACAudioFileCodec::readFrames(float *frameBuffer,
-                                         u_int32_t numFrames) {
+u_int32_t FLACAudioFileDecoder::readFrames(float *frameBuffer,
+                                           u_int32_t numFrames) {
   if (!_isFileInitialized) {
     USE_LOGGING_ERROR("Error reading frames of uninitialized decoder.");
   }
@@ -77,7 +79,7 @@ u_int32_t FLACAudioFileCodec::readFrames(float *frameBuffer,
   return readFrames;
 }
 
-u_int32_t FLACAudioFileCodec::getChannelNumber() {
+u_int32_t FLACAudioFileDecoder::getChannelNumber() {
   if (!_isFileInitialized) {
     USE_LOGGING_ERROR("Error getting channel number of uninitialized decoder.")
     return 0;
@@ -88,4 +90,4 @@ u_int32_t FLACAudioFileCodec::getChannelNumber() {
 
 //
 
-FLACAudioFileCodec::~FLACAudioFileCodec() { drflac_close(_drflacP); }
+FLACAudioFileDecoder::~FLACAudioFileDecoder() { drflac_close(_drflacP); }

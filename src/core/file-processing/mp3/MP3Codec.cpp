@@ -1,9 +1,9 @@
-#include "MP3AudioFileCodec.h"
+#include "MP3Codec.h"
 #include "core/context/Context.h"
 #include <iomanip>
 #include <vector>
 
-bool MP3AudioFileCodec::openFile(std::string fileName) {
+bool MP3AudioFileDecoder::initFile(std::string fileName) {
   _drmp3P = std::make_unique<drmp3>();
   if (!drmp3_init_file(_drmp3P.get(), fileName.c_str(), NULL)) {
     USE_LOGGING_ERROR("Couldn't open file with filename \"" << fileName
@@ -15,9 +15,11 @@ bool MP3AudioFileCodec::openFile(std::string fileName) {
   return true;
 }
 
-void MP3AudioFileCodec::reset() { drmp3_seek_to_pcm_frame(_drmp3P.get(), 0); }
+void MP3AudioFileDecoder::resetPointer() {
+  drmp3_seek_to_pcm_frame(_drmp3P.get(), 0);
+}
 
-void MP3AudioFileCodec::logFileInformation() {
+void MP3AudioFileDecoder::logFileInformation() {
   if (!_isFileInitialized)
     return;
 
@@ -38,7 +40,7 @@ void MP3AudioFileCodec::logFileInformation() {
                                     << " seconds");
 }
 
-void MP3AudioFileCodec::dumpContents(u_int32_t framesToDump) {
+void MP3AudioFileDecoder::dumpContents(u_int32_t framesToDump) {
   if (!_isFileInitialized) {
     USE_LOGGING_ERROR("Error dumping contents of uninitialized decoder.")
     return;
@@ -66,7 +68,7 @@ void MP3AudioFileCodec::dumpContents(u_int32_t framesToDump) {
 
 //
 
-u_int32_t MP3AudioFileCodec::getChannelNumber() {
+u_int32_t MP3AudioFileDecoder::getChannelNumber() {
   if (!_isFileInitialized) {
     USE_LOGGING_ERROR("Error getting channel number of uninitialized decoder.")
     return 0;
@@ -75,8 +77,8 @@ u_int32_t MP3AudioFileCodec::getChannelNumber() {
   return _drmp3P->channels;
 }
 
-u_int32_t MP3AudioFileCodec::readFrames(float *frameBuffer,
-                                        u_int32_t numFrames) {
+u_int32_t MP3AudioFileDecoder::readFrames(float *frameBuffer,
+                                          u_int32_t numFrames) {
   if (!_isFileInitialized) {
     USE_LOGGING_ERROR("Error reading frames of uninitialized decoder.");
   }
@@ -89,4 +91,4 @@ u_int32_t MP3AudioFileCodec::readFrames(float *frameBuffer,
 
 //
 
-MP3AudioFileCodec::~MP3AudioFileCodec() { drmp3_uninit(_drmp3P.get()); }
+MP3AudioFileDecoder::~MP3AudioFileDecoder() { drmp3_uninit(_drmp3P.get()); }

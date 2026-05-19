@@ -5,15 +5,16 @@
 #include "core/interfaces/file_processing.h"
 #include <memory>
 
-class MP3AudioFileCodec final : public IAudioFileCodec, public IAudioFilterSource {
+class MP3AudioFileDecoder final : public IAudioFileDecoder,
+                                  public IAudioFilterSource {
 private:
   std::unique_ptr<drmp3> _drmp3P;
   bool _isFileInitialized = false;
 
 public:
-  bool openFile(std::string filePath) override;
+  bool initFile(std::string filePath) override;
 
-  void reset() override;
+  void resetPointer() override;
 
   void logFileInformation() override;
 
@@ -23,5 +24,5 @@ public:
 
   u_int32_t getChannelNumber() override;
 
-~MP3AudioFileCodec();
+  ~MP3AudioFileDecoder();
 };

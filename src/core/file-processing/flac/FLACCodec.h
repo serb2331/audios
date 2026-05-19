@@ -4,16 +4,16 @@
 #include "core/interfaces/audio_filtering.h"
 #include "core/interfaces/file_processing.h"
 
-class FLACAudioFileCodec final : public IAudioFileCodec,
-                                 public IAudioFilterSource {
+class FLACAudioFileDecoder final : public IAudioFileDecoder,
+                                   public IAudioFilterSource {
 private:
   drflac *_drflacP = nullptr;
   bool _isFileInitialized = false;
 
 public:
-  bool openFile(std::string filePath) override;
+  bool initFile(std::string filePath) override;
 
-  void reset() override;
+  void resetPointer() override;
 
   void logFileInformation() override;
 
@@ -23,5 +23,5 @@ public:
 
   u_int32_t getChannelNumber() override;
 
-  ~FLACAudioFileCodec();
+  ~FLACAudioFileDecoder();
 };
