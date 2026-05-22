@@ -9,13 +9,14 @@ project(
 dr_libs_incl = include_directories('external')
 
 lib_sources = [
-  'core/context/Context.cpp',
-  'core/file-processing/wav/WAVAudioFileDecoder.cpp',
-  'core/file-processing/flac/FLACAudioFileDecoder.cpp',
-  'core/file-processing/mp3/MP3AudioFileDecoder.cpp',
   'core/dr_wav_source.cpp',
   'core/dr_mp3_source.cpp',
-  'core/dr_flac_source.cpp'
+  'core/dr_flac_source.cpp',
+  'core/context/Context.cpp',
+  'core/file-processing/wav/WAVCodec.cpp',
+  'core/file-processing/flac/FLACCodec.cpp',
+  'core/file-processing/mp3/MP3Codec.cpp',
+  'core/filtering/filters.cpp'
 ]
 
 exec_sources = [

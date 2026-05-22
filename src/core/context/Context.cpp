@@ -1,20 +1,17 @@
 #include "Context.h"
-#include <iostream>
-#include <ostream>
 
-Context::Context() {
+Context::Context() {}
+
+Context &Context::GetInstance() {
+  static Context instance;
+  return instance;
 }
 
-Context& Context::GetInstance()
-{
-    static Context instance;
-    return instance;
+void Context::setLogging(bool loggingValue) { _logging = loggingValue; }
+
+bool Context::getLogging() { return _logging; }
+
+void Context::setBufferFrameCount(u_int32_t size) {
+  _defaultBufferFrameCount = size;
 }
-
-
-void Context::setLogging(bool loggingValue)
-{
-    _logging = loggingValue;
-}
-
-bool Context::getLogging() {return _logging;}
+u_int32_t Context::getBufferFrameCount() { return _defaultBufferFrameCount; }

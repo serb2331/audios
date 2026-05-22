@@ -1,10 +1,19 @@
-#include "core/file-processing/flac/FLACAudioFileDecoder.h"
-#include "lib/audio-library.h"
+#include "../lib/audio-library.h"
+#include "core/context/Context.h"
+#include "core/file-processing/wav/WAVCodec.h"
+#include "core/filtering/filters.h"
+#include <memory>
+#include <sstream>
 #include <stdio.h>
+#include <sys/types.h>
+#include <vector>
 
 #define PROJECT_NAME "audio-library"
 
-static void setupProject() { Context::GetInstance().setLogging(true); }
+static void setupProject() {
+  Context::GetInstance().setLogging(true);
+  Context::GetInstance().setBufferFrameCount(512);
+}
 
 int main(int argc, char **argv) {
   if (argc != 1) {
@@ -14,22 +23,33 @@ int main(int argc, char **argv) {
   printf("\n\n\nThis is project %s.\n", PROJECT_NAME);
 
   setupProject();
+  /////////////////////////////////////
 
-  WAVAudioFileDecoder wav_decodec = WAVAudioFileDecoder();
-  wav_decodec.openFile("./sounds/pluck.wav");
-  wav_decodec.logFileInformation();
-  wav_decodec.reset();
-  // wav_decodec.logFileInformation();
+  auto decoder = std::make_unique<WAVAudioFileDecoder>();
+  decoder->initFile("/home/serb/coding/licenta/audio-lib/build/sounds/"
+                    "qubodup-cfork-ccby3-jump.wav");
+  decoder->logFileInformation();
 
-  MP3AudioFileDecoder mp3_decodec = MP3AudioFileDecoder();
-  mp3_decodec.openFile("./sounds/pluck.mp3");
-  mp3_decodec.logFileInformation();
-  mp3_decodec.reset();
+  //
 
-  FLACAudioFileDecoder flac_decodec = FLACAudioFileDecoder();
-  flac_decodec.openFile("./sounds/pluck.flac");
-  flac_decodec.logFileInformation();
-  flac_decodec.reset();
+  const u_int32_t bufferSize = Context::GetInstance().getBufferFrameCount();
+  auto decoderFormat = decoder->getDataFormat();
+
+  auto encoder = std::make_unique<WAVAudioFileEncoder>();
+  encoder->initFile("./sounds/writtenWAV.wav", &decoderFormat);
+
+  auto wavFilter = std::make_unique<GainAudioFilter>(0.5, std::move(decoder));
+  wavFilter->execute(bufferSize, *encoder);
+
+  std::cout << "\n\n";
+  encoder->logFileInformation();
+  encoder.reset();
+  //
+
+  std::cout << "\n\n";
+  decoder = std::make_unique<WAVAudioFileDecoder>();
+  decoder->initFile("./sounds/writtenWAV.wav");
+  decoder->logFileInformation();
 
   return 0;
 }
