@@ -100,8 +100,7 @@ void WAVAudioFileDecoder::dumpContents(u_int32_t framesToDump) {
   int readFrame = 1;
 
   while (currentFrame < framesToDump && readFrame == 1) {
-    readFrame =
-        drwav_read_pcm_frames_f32(&_impl->drwav, 1, bufferOut.data());
+    readFrame = drwav_read_pcm_frames_f32(&_impl->drwav, 1, bufferOut.data());
 
     std::stringstream ss("");
     ss << currentFrame << " ";
@@ -169,9 +168,15 @@ bool WAVAudioFileEncoder::isInitialized() const {
 bool WAVAudioFileEncoder::initFile(std::string filePath) {
   auto format = WAVAudioFileEncoder::DefaultDataFormat();
 
-  auto ret = drwav_init_file_write(
-      &_impl->drwav, filePath.c_str(),
-      reinterpret_cast<drwav_data_format *>(&format), NULL);
+  drwav_data_format drwav_format;
+  drwav_format.container = (drwav_container)format.container;
+  drwav_format.format = format.format;
+  drwav_format.channels = format.channels;
+  drwav_format.sampleRate = format.sampleRate;
+  drwav_format.bitsPerSample = format.bitsPerSample;
+
+  auto ret = drwav_init_file_write(&_impl->drwav, filePath.c_str(),
+                                   &drwav_format, NULL);
   if (!ret) {
     USE_LOGGING_ERROR("Couldnt initialize WAVEncoder for file: "
                       << filePath << " { " << ret << " } ");

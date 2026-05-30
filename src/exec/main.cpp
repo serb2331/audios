@@ -84,7 +84,5 @@ int main(int argc, char **argv) {
   // rtcReleaseScene(scene);
   // rtcReleaseDevice(device);
 
-  drwav_bool32 a;
-
   return 0;
 }
