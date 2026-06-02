@@ -1,7 +1,7 @@
-#include "audios/configuration.h"
+#include "audios/file_processing.h"
 #include <audios.h>
+#include <audios/configuration.h>
 #include <iostream>
-#include <limits>
 #include <stdio.h>
 #include <sys/types.h>
 
@@ -84,6 +84,32 @@ int main(int argc, char **argv) {
 
   // rtcReleaseScene(scene);
   // rtcReleaseDevice(device);
+
+  audios::BinaryGeometryReader reader{};
+
+  reader.openFile("geometry/room_geometry-CSGBakedMeshInstance3D.bin");
+
+  std::cout << reader.getIndexCount() << " " << reader.getVertexCount() << "\n";
+
+  auto vertices_o = reader.readVertices();
+  auto indexes_o = reader.readIndexes(3);
+
+  if (!vertices_o || !indexes_o)
+    std::cout << "\nfailed reading vertices or indexes";
+
+  auto vertices = vertices_o.value();
+  auto indexes = indexes_o.value();
+
+  std::cout << "VERTEX COUNT: " << vertices.size() << "\n";
+
+  std::cout << vertices[0].x << " " << vertices[0].y << " " << vertices[0].z
+            << "\n";
+  std::cout << vertices[1].x << " " << vertices[1].y << " " << vertices[1].z
+            << "\n";
+  std::cout << vertices[2].x << " " << vertices[2].y << " " << vertices[2].z
+            << "\n";
+
+  std::cout << indexes[0] << " " << indexes[1] << " " << indexes[2] << "\n";
 
   return 0;
 }

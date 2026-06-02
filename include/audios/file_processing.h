@@ -3,7 +3,10 @@
 #include "audios/export.h"
 #include "interfaces.h"
 #include <cstdint>
+#include <fstream>
 #include <memory>
+#include <optional>
+#include <vector>
 
 namespace audios {
 
@@ -56,8 +59,39 @@ public:
   bool isInitialized() const override;
 
   void resetEncoder() override;
-  
+
   uint32_t writeFrames(const float *frameBuffer, uint32_t numFrames) override;
+};
+
+///
+
+typedef struct AUDIOS_EXPORT Vertex3 {
+  float x;
+  float y;
+  float z;
+} Vertex3;
+
+class AUDIOS_EXPORT BinaryGeometryReader {
+private:
+  std::ifstream _vertexFilePointer;
+  std::ifstream _indexFilePointer;
+  int64_t _vertexArraySize;
+  int64_t _indexArraySize;
+  std::string _filePath;
+
+public:
+  BinaryGeometryReader();
+  ~BinaryGeometryReader();
+
+  bool openFile(std::string filePath);
+
+  void resetReader();
+
+  int64_t getVertexCount();
+  int64_t getIndexCount();
+
+  std::optional<std::vector<Vertex3>> readVertices();
+  std::optional<std::vector<uint32_t>> readIndexes(uint32_t indexCount);
 };
 
 } // namespace audios

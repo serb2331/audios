@@ -20,6 +20,7 @@ lib_sources = [
   'src/file-processing/wav/file_processing_WAVCodec_s.cpp',
   # 'src/file-processing/flac/FLACCodec.cpp',
   # 'src/file-processing/mp3/MP3Codec.cpp',
+  'src/file-processing/binary_geometry/file_processing_BinaryGeometryReader_s.cpp',
   'src/filtering/audio_filtering_AudioFilterBase_s.cpp',
   'src/filtering/audio_filtering_GainAudioFilter_s.cpp',
   'src/ray-tracing/ray_tracer_RTEmbreeFacade_s.cpp',
