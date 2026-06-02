@@ -1,6 +1,7 @@
 #pragma once
 
 #include "audios/export.h"
+#include "geometry.h"
 #include "interfaces.h"
 #include <cstdint>
 #include <fstream>
@@ -65,12 +66,6 @@ public:
 
 ///
 
-typedef struct AUDIOS_EXPORT Vertex3 {
-  float x;
-  float y;
-  float z;
-} Vertex3;
-
 class AUDIOS_EXPORT BinaryGeometryReader {
 private:
   std::ifstream _vertexFilePointer;
@@ -89,8 +84,9 @@ public:
 
   int64_t getVertexCount();
   int64_t getIndexCount();
+  int64_t getIndexPairCount();
 
-  std::optional<std::vector<Vertex3>> readVertices();
+  std::optional<std::vector<Vector3>> readVertices();
   std::optional<std::vector<uint32_t>> readIndexes(uint32_t indexCount);
 };
 

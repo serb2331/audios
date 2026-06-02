@@ -64,34 +64,59 @@ void BinaryGeometryReader::resetReader() {
 
 int64_t BinaryGeometryReader::getVertexCount() { return _vertexArraySize; }
 int64_t BinaryGeometryReader::getIndexCount() { return _indexArraySize; }
+int64_t BinaryGeometryReader::getIndexPairCount() {
+  return _indexArraySize / 3;
+}
 
-std::optional<std::vector<Vertex3>> BinaryGeometryReader::readVertices() {
-  std::vector<Vertex3> vertices;
-  vertices.resize(_vertexArraySize);
+std::optional<std::vector<Vector3>> BinaryGeometryReader::readVertices() {
+  std::vector<float> floatBuffer;
+  floatBuffer.resize(_vertexArraySize * 3);
 
-  if (!_vertexFilePointer.read(reinterpret_cast<char *>(vertices.data()),
-                               _vertexArraySize * sizeof(Vertex3))) {
+  if (!_vertexFilePointer.read(reinterpret_cast<char *>(floatBuffer.data()),
+                               floatBuffer.size() * sizeof(float))) {
     USE_LOGGING_ERROR("Error when reading vertex data.");
     return {};
   }
 
-  USE_LOGGING("Successfully read " << _vertexArraySize << " vertices.");
-  USE_LOGGING(vertices.size());
+  uint32_t floatCount = floatBuffer.size();
+  std::vector<Vector3> vertices;
+  vertices.resize(_vertexArraySize);
+
+  for (uint32_t i = 0; i < floatCount / 3; i += 1) {
+    vertices[i].x = floatBuffer[i * 3];
+    vertices[i].y = floatBuffer[i * 3 + 1];
+    vertices[i].z = floatBuffer[i * 3 + 2];
+    vertices[i].pad = 0.0f;
+  }
+
+  USE_LOGGING("Successfully read " << vertices.size()
+                                   << " vertices (size of buffer: "
+                                   << vertices.size() * 4 << " floats).");
   return vertices;
 }
 
 std::optional<std::vector<uint32_t>>
-BinaryGeometryReader::readIndexes(uint32_t indexCount) {
-  std::vector<uint32_t> indexes;
-  indexes.resize(indexCount);
+BinaryGeometryReader::readIndexes(uint32_t indexPairCount) {
+  std::vector<uint32_t> indexBuffer;
+  indexBuffer.resize(indexPairCount * 3);
 
-  if (!_vertexFilePointer.read(reinterpret_cast<char *>(indexes.data()),
-                               indexCount * sizeof(uint32_t))) {
+  if (!_vertexFilePointer.read(reinterpret_cast<char *>(indexBuffer.data()),
+                               indexBuffer.size() * sizeof(uint32_t))) {
     USE_LOGGING_ERROR("Error when reading vertex data.");
     return std::nullopt;
   }
 
-  USE_LOGGING("Successfully read " << indexCount << " indexes.");
+  std::vector<uint32_t> indexes(indexPairCount * 4);
+  for (uint32_t i = 0; i < indexPairCount; i += 1) {
+    indexes[i * 4] = indexBuffer[i * 3];
+    indexes[i * 4 + 1] = indexBuffer[i * 3 + 1];
+    indexes[i * 4 + 2] = indexBuffer[i * 3 + 2];
+    indexes[i * 4 + 3] = 0;
+  }
+
+  USE_LOGGING("Successfully read " << indexes.size() / 4 * 3
+                                   << " indexes (real buffer size "
+                                   << indexes.size() << ").");
 
   return indexes;
 }

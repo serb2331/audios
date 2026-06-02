@@ -24,7 +24,8 @@ lib_sources = [
   'src/filtering/audio_filtering_AudioFilterBase_s.cpp',
   'src/filtering/audio_filtering_GainAudioFilter_s.cpp',
   'src/ray-tracing/ray_tracer_RTEmbreeFacade_s.cpp',
-  'src/ray-tracing/RTESceneManager_s.cpp'
+  'src/ray-tracing/RTESceneManager_s.cpp',
+  'src/ray-tracing/geometry/RTEmbreeGeometry_s.cpp'
 ]
 
 exec_sources = [

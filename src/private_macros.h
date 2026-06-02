@@ -3,6 +3,7 @@
 #include "_external/private_embree.h" // IWYU pragma: keep
 #include "src/context/Context_p.h"    // IWYU pragma: keep
 #include <embree4/rtcore_device.h>
+#include <embree4/rtcore_geometry.h>
 #include <embree4/rtcore_scene.h>
 #include <iostream> // IWYU pragma: keep
 #include <memory>
@@ -25,8 +26,13 @@ struct RTCDeviceDeleter {
 struct RTCSceneDeleter {
   void operator()(RTCScene s) const { rtcReleaseScene(s); }
 };
+struct RTCGeometryDeleter {
+  void operator()(RTCGeometry g) const { rtcReleaseGeometry(g); }
+};
 
 using UniqueRTCDevice =
     std::unique_ptr<std::remove_pointer_t<RTCDevice>, RTCDeviceDeleter>;
 using UniqueRTCScene =
     std::unique_ptr<std::remove_pointer_t<RTCScene>, RTCSceneDeleter>;
+using UniqueRTCGeometry =
+    std::unique_ptr<std::remove_pointer_t<RTCGeometry>, RTCGeometryDeleter>;
