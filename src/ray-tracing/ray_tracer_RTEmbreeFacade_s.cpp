@@ -32,7 +32,8 @@ int RTEmbreeFacade::registerGeometryFromBinaryFile(std::string filePath) {
 
 int RTEmbreeFacade::instanceGeometryFromLibrary(
     int geometrySceneId, AffineTransformMatrix transform) {
-  _impl->pSceneManager->instanceGeometryFromLibrary(geometrySceneId, transform);
+  return _impl->pSceneManager->instanceGeometryFromLibrary(geometrySceneId,
+                                                           transform);
 }
 
 } // namespace audios
