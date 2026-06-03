@@ -1,5 +1,6 @@
 #pragma once
 
+#include "audios/geometry.h"
 #include "export.h"
 #include <memory>
 
@@ -15,7 +16,9 @@ public:
   RTEmbreeFacade(std::string config);
   ~RTEmbreeFacade();
 
-  bool registerGeometryFromBinaryFile(std::string filePath);
+  int registerGeometryFromBinaryFile(std::string filePath);
+  int instanceGeometryFromLibrary(int geometrySceneId,
+                                  AffineTransformMatrix transform);
 };
 
 } // namespace audios

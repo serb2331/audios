@@ -17,12 +17,12 @@ private:
       _pInstanceScene;
   RTCGeometryType _geometryType;
   std::vector<Vector3> _vertexBuffer;
-  std::vector<uint32_t> _indexBuffer;
+  std::vector<IndexTriple> _indexBuffer;
 
 public:
   RTEmbreeGeometryScene(const RTCDevice &device, RTCGeometryType type,
                         std::vector<Vector3> &&vertexBuffer,
-                        std::vector<uint32_t> &&indexBuffer);
+                        std::vector<IndexTriple> &&indexBuffer);
   RTEmbreeGeometryScene(const RTEmbreeGeometryScene &) = delete;
   RTEmbreeGeometryScene(RTEmbreeGeometryScene &&) noexcept = default;
 
@@ -30,6 +30,7 @@ public:
   RTEmbreeGeometryScene &operator=(RTEmbreeGeometryScene &&) noexcept = default;
 
   RTCGeometry getEmbreeGeometry();
+  RTCScene getEmbreeScene();
 };
 
 } // namespace audios

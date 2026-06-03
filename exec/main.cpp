@@ -88,9 +88,6 @@ int main(int argc, char **argv) {
 
 
 
-
-
-
   // audios::BinaryGeometryReader reader{};
 
   // reader.openFile("geometry/room_geometry-CSGBakedMeshInstance3D.bin");
@@ -115,9 +112,8 @@ int main(int argc, char **argv) {
   // std::cout << vertices[2].x << " " << vertices[2].y << " " << vertices[2].z
   //           << " " << vertices[0].pad << "\n";
 
-  // std::cout << indexes[0] << " " << indexes[1] << " " << indexes[2] << " " << indexes[3] << "\n";
-
-
+  // std::cout << indexes[0].one << " " << indexes[0].two << " " << indexes[0].three << " "
+  //           << indexes[0].padding << "\n";
 
 
 

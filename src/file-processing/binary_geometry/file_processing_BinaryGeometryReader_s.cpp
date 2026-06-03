@@ -95,28 +95,28 @@ std::optional<std::vector<Vector3>> BinaryGeometryReader::readVertices() {
   return vertices;
 }
 
-std::optional<std::vector<uint32_t>>
+std::optional<std::vector<IndexTriple>>
 BinaryGeometryReader::readIndexes(uint32_t indexPairCount) {
   std::vector<uint32_t> indexBuffer;
   indexBuffer.resize(indexPairCount * 3);
 
-  if (!_vertexFilePointer.read(reinterpret_cast<char *>(indexBuffer.data()),
-                               indexBuffer.size() * sizeof(uint32_t))) {
-    USE_LOGGING_ERROR("Error when reading vertex data.");
+  if (!_indexFilePointer.read(reinterpret_cast<char *>(indexBuffer.data()),
+                              indexBuffer.size() * sizeof(uint32_t))) {
+    USE_LOGGING_ERROR("Error when reading index data.");
     return std::nullopt;
   }
 
-  std::vector<uint32_t> indexes(indexPairCount * 4);
+  std::vector<IndexTriple> indexes(indexPairCount);
   for (uint32_t i = 0; i < indexPairCount; i += 1) {
-    indexes[i * 4] = indexBuffer[i * 3];
-    indexes[i * 4 + 1] = indexBuffer[i * 3 + 1];
-    indexes[i * 4 + 2] = indexBuffer[i * 3 + 2];
-    indexes[i * 4 + 3] = 0;
+    indexes[i].one = indexBuffer[i * 3];
+    indexes[i].two = indexBuffer[i * 3 + 1];
+    indexes[i].three = indexBuffer[i * 3 + 2];
+    indexes[i].padding = 0;
   }
 
-  USE_LOGGING("Successfully read " << indexes.size() / 4 * 3
-                                   << " indexes (real buffer size "
-                                   << indexes.size() << ").");
+  USE_LOGGING("Successfully read "
+              << indexes.size() << " index pairs (real buffer size "
+              << indexes.size() * 4 << " integers + padding).");
 
   return indexes;
 }

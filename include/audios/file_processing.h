@@ -87,7 +87,7 @@ public:
   int64_t getIndexPairCount();
 
   std::optional<std::vector<Vector3>> readVertices();
-  std::optional<std::vector<uint32_t>> readIndexes(uint32_t indexCount);
+  std::optional<std::vector<IndexTriple>> readIndexes(uint32_t indexPairCount);
 };
 
 } // namespace audios
