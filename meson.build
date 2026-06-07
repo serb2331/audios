@@ -3,7 +3,7 @@ project(
   'cpp',
   meson_version : '>= 1.3.0',
   version : '0.1',
-  default_options : ['warning_level=3', 'cpp_std=c++20'],
+  default_options : ['warning_level=3', 'cpp_std=c++20', 'Wno=psabi'],
 )
 
 include_public = include_directories('include')
@@ -15,6 +15,8 @@ lib_sources = [
   'src/_external/dr_wav_s.cpp',
   'src/_external/dr_mp3_s.cpp',
   'src/_external/dr_flac_s.cpp',
+  'src/utils/random_s.cpp',
+  'src/utils/utils_s.cpp',
   'src/context/configuration_s.cpp',
   'src/context/Context_s.cpp',
   'src/file-processing/wav/file_processing_WAVCodec_s.cpp',
@@ -25,7 +27,8 @@ lib_sources = [
   'src/filtering/audio_filtering_GainAudioFilter_s.cpp',
   'src/ray-tracing/ray_tracer_RTEmbreeFacade_s.cpp',
   'src/ray-tracing/scene/RTEmbreeSceneManager_s.cpp',
-  'src/ray-tracing/geometry/RTEmbreeGeometry_s.cpp'
+  'src/ray-tracing/geometry/RTEmbreeGeometry_s.cpp',
+  'src/ray-tracing/rendering/RTEmbreeRenderingManager_s.cpp'
 ]
 
 exec_sources = [

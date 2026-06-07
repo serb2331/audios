@@ -4,18 +4,18 @@
 namespace audios {
 
 void Configuration::setLogging(bool loggingValue) {
-  Context::GetInstance().setLogging(loggingValue);
+  AudiosContext::GetInstance().setLogging(loggingValue);
 }
 
 bool Configuration::isLoggingEnabled() {
-  return Context::GetInstance().getLogging();
+  return AudiosContext::GetInstance().getLogging();
 }
 
 void Configuration::setBufferFrameCount(uint32_t size) {
-  Context::GetInstance().setBufferFrameCount(size);
+  AudiosContext::GetInstance().setBufferFrameCount(size);
 }
 uint32_t Configuration::getBufferFrameCount() {
-  return Context::GetInstance().getBufferFrameCount();
+  return AudiosContext::GetInstance().getBufferFrameCount();
 }
 
 } // namespace audios
