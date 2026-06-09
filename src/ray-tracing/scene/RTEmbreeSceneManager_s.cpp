@@ -2,7 +2,6 @@
 #include "_external/private_embree.h" // IWYU pragma: keep
 #include "audios/file_processing.h"
 #include "private_macros.h"
-#include "ray-tracing/geometry/RTEmbreeGeometry_p.h"
 #include <embree4/rtcore_buffer.h>
 #include <embree4/rtcore_common.h>
 #include <embree4/rtcore_geometry.h>

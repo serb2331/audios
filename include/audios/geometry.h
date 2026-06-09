@@ -35,9 +35,11 @@ typedef struct alignas(16) AUDIOS_EXPORT Vector3 {
   }
 
   Vector3 normalize() const {
-    float d = std::sqrt(x * x + y * y + z * z);
+    float d = this->length();
     return {x / d, y / d, z / d, pad};
   }
+
+  float length() const { return std::sqrt(x * x + y * y + z * z); }
 
 } Vector3;
 

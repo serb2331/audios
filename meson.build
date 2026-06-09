@@ -27,8 +27,10 @@ lib_sources = [
   'src/filtering/audio_filtering_GainAudioFilter_s.cpp',
   'src/ray-tracing/ray_tracer_RTEmbreeFacade_s.cpp',
   'src/ray-tracing/scene/RTEmbreeSceneManager_s.cpp',
-  'src/ray-tracing/geometry/RTEmbreeGeometry_s.cpp',
-  'src/ray-tracing/rendering/RTEmbreeRenderingManager_s.cpp'
+  'src/ray-tracing/geometry/RTEmbreeGeometryScene_s.cpp',
+  'src/ray-tracing/rendering/RTEmbreeRenderingManager_s.cpp',
+  'src/audio-rendering/delay-line/DelayLine_s.cpp',
+  'src/audio-rendering/audio_rendering_AudiosRenderer_s.cpp'
 ]
 
 exec_sources = [

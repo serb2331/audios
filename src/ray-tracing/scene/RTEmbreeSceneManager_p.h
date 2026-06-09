@@ -3,7 +3,7 @@
 #include "_external/private_embree.h"
 #include "audios/geometry.h"
 #include "private_macros.h"
-#include "ray-tracing/geometry/RTEmbreeGeometry_p.h"
+#include "ray-tracing/geometry/RTEmbreeGeometryScene_p.h"
 #include <cstdint>
 #include <memory>
 #include <type_traits>

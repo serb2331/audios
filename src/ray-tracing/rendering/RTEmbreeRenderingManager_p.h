@@ -2,6 +2,7 @@
 
 #include "_external/private_embree.h"
 #include "audios/geometry.h"
+#include "audios/ray_tracer.h"
 #include "context/Context_p.h"
 #include <cstdint>
 #include <memory>
@@ -30,21 +31,6 @@ private:
   AudioRayContext _initRayContext(float rayFrequency, float initialEnergy);
 
 public:
-  struct alignas(16) AcousticRayTraceResult {
-    float dist;
-    float en;
-    float freq;
-    uint32_t bounceCount;
-    Vector3 lastNormal;
-  };
-
-  static constexpr AcousticRayTraceResult INVALID_RESULT = {
-      -1.0f, // or std::numeric_limits<float>::infinity()
-      0.0f,
-      0.0f,
-      0,
-      {0, 0, 0, 0}};
-
   struct Configuration {
     uint32_t rayCount = AudiosContext::GetInstance().getRayCount();
     uint32_t maxBounce = AudiosContext::GetInstance().getMaxBounceCount();
@@ -52,9 +38,9 @@ public:
 
   RTEmbreeRenderingManager(Configuration conf);
 
-  void renderScene(RTCScene render, Vector3 listenerPosition,
-                   std::unordered_set<uint32_t> emitterIds,
-                   AcousticRayTraceResult *resultBuffer);
+  uint32_t renderScene(RTCScene render, Vector3 listenerPosition,
+                       std::unordered_set<uint32_t> emitterIds,
+                       AcousticRayTraceResult *resultBuffer, uint32_t rayCount);
   void rayHitTestScene(RTCScene scene);
 
   uint32_t getRayCount();

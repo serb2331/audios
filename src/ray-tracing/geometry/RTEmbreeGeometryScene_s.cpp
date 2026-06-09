@@ -1,4 +1,4 @@
-#include "RTEmbreeGeometry_p.h"
+#include "RTEmbreeGeometryScene_p.h"
 #include "private_macros.h"
 
 namespace audios {
