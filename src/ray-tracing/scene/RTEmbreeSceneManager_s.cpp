@@ -56,6 +56,24 @@ RTEmbreeSceneManager::registerGeometryFromBinaryFile(std::string filePath,
   return registerId;
 }
 
+uint32_t RTEmbreeSceneManager::registerGeometryFromBuffer(
+    const float *vertices, uint32_t nVertices, const uint32_t *indexes,
+    uint32_t nIndexes, uint32_t registerId) {
+
+  auto pGeometryScene = std::make_unique<RTEmbreeGeometryScene>(
+      _mainDevice, RTC_GEOMETRY_TYPE_TRIANGLE, vertices, nVertices, indexes,
+      nIndexes);
+  _geometrySceneLibrary.push_back(std::move(pGeometryScene));
+
+  if (registerId == static_cast<uint32_t>(-1)) {
+    USE_LOGGING("Registering untracked geometry");
+    return -1;
+  }
+  _geometryLibraryIdMap.insert({registerId, _geometrySceneLibrary.size() - 1});
+
+  return registerId;
+}
+
 uint32_t RTEmbreeSceneManager::instanceGeometryFromLibrary(
     uint32_t geometrySceneId, AffineTransformMatrix transform,
     uint32_t registerId) {

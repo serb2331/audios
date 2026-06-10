@@ -23,6 +23,9 @@ public:
   RTEmbreeGeometryScene(const RTCDevice &device, RTCGeometryType type,
                         std::vector<Vector3> &&vertexBuffer,
                         std::vector<IndexTriple> &&indexBuffer);
+  RTEmbreeGeometryScene(const RTCDevice &device, RTCGeometryType type,
+                        const float *vertexBuffer, uint32_t vertexCount,
+                        const uint32_t *indexBuffer, uint32_t indexCount);
   RTEmbreeGeometryScene(const RTEmbreeGeometryScene &) = delete;
   RTEmbreeGeometryScene(RTEmbreeGeometryScene &&) noexcept = default;
 

@@ -45,6 +45,16 @@ uint32_t RTEmbreeFacade::registerGeometryFromBinaryFile(std::string filePath,
                                                               registerId);
 }
 
+uint32_t RTEmbreeFacade::registerGeometryFromBuffer(const float *vertices,
+                                                    uint32_t nVertices,
+                                                    const uint32_t *indexes,
+                                                    uint32_t nIndexes,
+                                                    uint32_t registerId) {
+
+  return _impl->pSceneManager->registerGeometryFromBuffer(
+      vertices, nVertices, indexes, nIndexes, registerId);
+}
+
 uint32_t RTEmbreeFacade::instanceGeometryById(uint32_t geometrySceneId,
                                               AffineTransformMatrix transform,
                                               uint32_t instanceRegisterId) {

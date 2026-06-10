@@ -39,11 +39,13 @@ exec_sources = [
 
 audios = shared_library('audios', lib_sources, 
   include_directories: [include_private, include_public], 
-  dependencies: embree_dep, 
+  dependencies: [embree_dep], 
   gnu_symbol_visibility : 'hidden', 
   cpp_args : '-DAUDIOS_BUILD_LIBRARY',
   install: true
 )
+
+install_subdir('include', install_dir: 'include', strip_directory: true)
 
 audios_dependency = declare_dependency(
   link_with: audios, 

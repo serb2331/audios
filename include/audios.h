@@ -4,6 +4,7 @@
 #include "audios/audio_filtering.h"
 #include "audios/audio_rendering.h"
 #include "audios/configuration.h"
+#include "audios/export.h"
 #include "audios/file_processing.h"
 #include "audios/geometry.h"
 #include "audios/interfaces.h"

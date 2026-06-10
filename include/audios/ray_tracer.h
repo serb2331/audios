@@ -38,6 +38,10 @@ public:
 
   uint32_t registerGeometryFromBinaryFile(std::string filePath,
                                           uint32_t registerId);
+
+  uint32_t registerGeometryFromBuffer(const float *vertices, uint32_t nVertices,
+                                      const uint32_t *indexes,
+                                      uint32_t nIndexes, uint32_t registerId);
   uint32_t instanceGeometryById(uint32_t geometrySceneId,
                                 AffineTransformMatrix transform,
                                 uint32_t instanceRegisterId);

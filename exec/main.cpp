@@ -1,9 +1,4 @@
-#include "audios/audio_rendering.h"
-#include "audios/file_processing.h"
-#include "audios/geometry.h"
-#include "audios/ray_tracer.h"
 #include <audios.h>
-#include <audios/configuration.h>
 #include <iostream>
 #include <stdio.h>
 #include <sys/types.h>
@@ -68,7 +63,8 @@ int main(int argc, char **argv) {
       listenerPosition =
           listenerPosition + audios::Vector3{0.01, 0.0, 0.0, 0.0};
       resultCount =
-          facade.renderMainScene(listenerPosition, rayResults.data(), rayCount);
+          facade.renderMainScene(listenerPosition, rayResults.data(),
+          rayCount);
       renderer.processTracingResults(rayResults.data(), resultCount);
     }
     renderer.processAudioBuffer(wavReadBuffer.data(), wavWriteBuffer.data(),
@@ -82,13 +78,18 @@ int main(int argc, char **argv) {
       listenerPosition =
           listenerPosition + audios::Vector3{0.01, 0.0, 0.0, 0.0};
       resultCount =
-          facade.renderMainScene(listenerPosition, rayResults.data(), rayCount);
+          facade.renderMainScene(listenerPosition, rayResults.data(),
+          rayCount);
       renderer.processTracingResults(rayResults.data(), resultCount);
     }
     renderer.processAudioBuffer(wavReadBuffer.data(), wavWriteBuffer.data(),
                                 nrFramesRead * channels);
     enc.writeFrames(wavWriteBuffer.data(), nrFramesRead);
   }
+
+  audios::Vector3 a = {1.0, 0.0, 1.0, 0.0};
+  auto b = a.toPolar();
+  std::cout << b.x << " " << b.y << " " << b.z << "\n";
 
   return 0;
 }
