@@ -1,5 +1,4 @@
 #include "_external/private_embree.h"
-#include "context/Context_p.h"
 #include "include/audios/ray_tracer.h"
 #include "private_macros.h"
 #include "ray-tracing/rendering/RTEmbreeRenderingManager_p.h"
@@ -46,6 +45,16 @@ uint32_t RTEmbreeFacade::registerGeometryFromBinaryFile(std::string filePath,
                                                               registerId);
 }
 
+uint32_t RTEmbreeFacade::registerGeometryFromBuffer(const float *vertices,
+                                                    uint32_t nVertices,
+                                                    const uint32_t *indexes,
+                                                    uint32_t nIndexes,
+                                                    uint32_t registerId) {
+
+  return _impl->pSceneManager->registerGeometryFromBuffer(
+      vertices, nVertices, indexes, nIndexes, registerId);
+}
+
 uint32_t RTEmbreeFacade::instanceGeometryById(uint32_t geometrySceneId,
                                               AffineTransformMatrix transform,
                                               uint32_t instanceRegisterId) {
@@ -65,13 +74,16 @@ void RTEmbreeFacade::testMainSceneRayTrace() {
       _impl->pSceneManager->getMainScene());
 }
 
-void RTEmbreeFacade::renderMainScene(Vector3 listenerPosition) {
-  std::vector<RTEmbreeRenderingManager::AcousticRayTraceResult> res(
-      _impl->pRenderingManager->getRayCount());
+uint32_t RTEmbreeFacade::getTracingRayCount() {
+  return _impl->pRenderingManager->getRayCount();
+}
 
-  _impl->pRenderingManager->renderScene(
+uint32_t RTEmbreeFacade::renderMainScene(Vector3 listenerPosition,
+                                         AcousticRayTraceResult *resultBuffer,
+                                         uint32_t rayCount) {
+  return _impl->pRenderingManager->renderScene(
       _impl->pSceneManager->getMainScene(), listenerPosition,
-      _impl->pSceneManager->getEmitterIds(), res.data());
+      _impl->pSceneManager->getEmitterIds(), resultBuffer, rayCount);
 }
 
 } // namespace audios

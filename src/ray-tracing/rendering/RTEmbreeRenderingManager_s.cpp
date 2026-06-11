@@ -6,6 +6,13 @@
 
 namespace audios {
 
+auto getTopLevelHitId = [](const RTCRayHit &rh) -> uint32_t {
+  if (rh.hit.instID[0] != RTC_INVALID_GEOMETRY_ID) {
+    return rh.hit.instID[0]; // instanced geometry — use instance id
+  }
+  return rh.hit.geomID; // direct geometry — geomID is top-level
+};
+
 void RTEmbreeRenderingManager::_setupRayForTrace(RTCRayHit &rh,
                                                  Vector3 newStart,
                                                  Vector3 newDir) {
@@ -93,18 +100,21 @@ void RTEmbreeRenderingManager::rayHitTestScene(RTCScene scene) {
   USE_LOGGING_ERROR("No valid geometry hit!: " << testRayHit.hit.geomID);
 }
 
-void RTEmbreeRenderingManager::renderScene(
-    RTCScene scene, Vector3 listenerPosition,
-    std::unordered_set<uint32_t> emitterIds,
-    AcousticRayTraceResult *resultBuffer) {
-  USE_LOGGING("Rendering scene with " << _rayCount << " rays");
+uint32_t
+RTEmbreeRenderingManager::renderScene(RTCScene scene, Vector3 listenerPosition,
+                                      std::unordered_set<uint32_t> emitterIds,
+                                      AcousticRayTraceResult *resultBuffer,
+                                      uint32_t rayCount) {
+  USE_LOGGING("Rendering scene with " << rayCount << " rays");
 
-  for (uint32_t i = 0; i < _rayCount; i += 1) {
+  uint32_t validRayCount = 0;
+
+  for (uint32_t i = 0; i < rayCount; i += 1) {
     Vector3 rhOrigin = listenerPosition;
     Vector3 rhDirection = AudiosRandomizer::randomSpherePoint().normalize();
-    // Vector3 rhDirection = {1.0, 0.0, 0.0, 0.0};
     bool rayArrived = false;
     AcousticRayTraceResult res;
+    res.startDirection = rhDirection;
 
     RTCRayHit rh = _createInitialRayHit(rhOrigin, rhDirection);
     AudioRayContext c = _initRayContext(1.0, 1.0);
@@ -129,12 +139,20 @@ void RTEmbreeRenderingManager::renderScene(
       Vector3 normal(rh.hit.Ng_x, rh.hit.Ng_y, rh.hit.Ng_z, 0.0f);
       normal = normal.normalize();
 
-      if (emitterIds.contains(rh.hit.geomID)) {
+      uint32_t hitId = getTopLevelHitId(rh);
+
+      if (emitterIds.contains(hitId)) {
         // USE_LOGGING("Ray hit emitter sphere with id: "
-        //             << rh.hit.geomID << " after " << c.bounceCount
-        //             << " bounces");
+        //             << hitId << " after " << c.bounceCount << " bounces");
         rayArrived = true;
-        res = {c.dist, c.en, c.freq, c.bounceCount, normal};
+        res = {c.dist,
+               c.en,
+               c.freq,
+               c.bounceCount,
+               normal,
+               res.startDirection,
+               rhDirection.normalize(),
+               hitId};
         continue;
       }
 
@@ -156,10 +174,19 @@ void RTEmbreeRenderingManager::renderScene(
       USE_EMBREE_DEVICE_ERROR(rtcGetSceneDevice(scene));
     }
 
-    resultBuffer[i] = rayArrived ? res : INVALID_RESULT;
+    if (rayArrived) {
+      // USE_LOGGING(res.dist << " " << res.bounceCount << " "
+      //                      << res.finalDirection << " " << res.startDirection
+      //                      << " " << res.hitEmitterId << " " <<
+      //                      res.lastNormal)
+      resultBuffer[validRayCount++] = res;
+    }
   }
 
-  USE_LOGGING("Finished rendering scene")
+  // USE_LOGGING("Finished rendering scene with " << validRayCount
+  //                                              << " arriving rays");
+
+  return validRayCount;
 }
 
 uint32_t RTEmbreeRenderingManager::getRayCount() { return _rayCount; }

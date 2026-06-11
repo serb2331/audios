@@ -5,41 +5,53 @@
 #include <iostream>                   // IWYU pragma: keep
 #include <memory>
 
+#include <sstream>
+
 #define USE_LOGGING(X)                                                         \
   {                                                                            \
-    if (AudiosContext::GetInstance().getLogging())                                   \
-      std::cout << "\033[32m[AudioLibrary]\033[0m " << X << std::endl;         \
+    if (AudiosContext::GetInstance().getLogging() &&                           \
+        AudiosContext::GetInstance().getLogCallback()) {                       \
+      std::ostringstream oss;                                                  \
+      oss << "[AudioLibrary] " << X;                                           \
+      AudiosContext::GetInstance().getLogCallback()(oss.str().c_str());        \
+    }                                                                          \
   }
 
 #define USE_LOGGING_ERROR(X)                                                   \
   {                                                                            \
-    if (AudiosContext::GetInstance().getLogging())                                   \
-      std::cout << "\033[31m[AudioLibrary]\033[0m " << X << std::endl;         \
+    if (AudiosContext::GetInstance().getLogging() &&                           \
+        AudiosContext::GetInstance().getLogCallback()) {                       \
+      std::ostringstream oss;                                                  \
+      oss << "[AudioLibrary] " << X;                                           \
+      AudiosContext::GetInstance().getLogCallback()(oss.str().c_str());        \
+    }                                                                          \
   }
 
 #define USE_EMBREE_DEVICE_ERROR(X)                                             \
   {                                                                            \
-    if (AudiosContext::GetInstance().getLogging()) {                                 \
+    if (AudiosContext::GetInstance().getLogging() &&                           \
+        AudiosContext::GetInstance().getLogCallback()) {                       \
       auto error = rtcGetDeviceError(X);                                       \
       if (error != RTC_ERROR_NONE) {                                           \
-        std::cout << "\033[31m[AudioLibrary]\033[0m Embree device error: "     \
-                  << error << std::endl;                                       \
-        std::cout << "\033[31m[AudioLibrary]\033[0m Error String: "            \
-                  << rtcGetErrorString(error) << std::endl;                    \
+        std::ostringstream oss;                                                \
+        oss << "[AudioLibrary] Embree device error: " << error                 \
+            << "\n[AudioLibrary] Error String: " << rtcGetErrorString(error);  \
+        AudiosContext::GetInstance().getLogCallback()(oss.str().c_str());      \
       }                                                                        \
     }                                                                          \
   }
 
 #define USE_EMBREE_DEVICE_ERROR_LOG(X, Y)                                      \
   {                                                                            \
-    if (AudiosContext::GetInstance().getLogging()) {                                 \
+    if (AudiosContext::GetInstance().getLogging() &&                           \
+        AudiosContext::GetInstance().getLogCallback()) {                       \
       auto error = rtcGetDeviceError(X);                                       \
       if (error != RTC_ERROR_NONE) {                                           \
-        std::cout << "\033[31m[AudioLibrary]\033[0m " << Y << std::endl;       \
-        std::cout << "\033[31m[AudioLibrary]\033[0m Embree device error: "     \
-                  << error << std::endl;                                       \
-        std::cout << "\033[31m[AudioLibrary]\033[0m Error String: "            \
-                  << rtcGetErrorString(error) << std::endl;                    \
+        std::ostringstream oss;                                                \
+        oss << "[AudioLibrary] " << Y                                          \
+            << "\n[AudioLibrary] Embree device error: " << error               \
+            << "\n[AudioLibrary] Error String: " << rtcGetErrorString(error);  \
+        AudiosContext::GetInstance().getLogCallback()(oss.str().c_str());      \
       }                                                                        \
     }                                                                          \
   }

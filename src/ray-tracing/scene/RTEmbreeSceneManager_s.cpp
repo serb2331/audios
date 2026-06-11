@@ -2,7 +2,6 @@
 #include "_external/private_embree.h" // IWYU pragma: keep
 #include "audios/file_processing.h"
 #include "private_macros.h"
-#include "ray-tracing/geometry/RTEmbreeGeometry_p.h"
 #include <embree4/rtcore_buffer.h>
 #include <embree4/rtcore_common.h>
 #include <embree4/rtcore_geometry.h>
@@ -57,6 +56,24 @@ RTEmbreeSceneManager::registerGeometryFromBinaryFile(std::string filePath,
   return registerId;
 }
 
+uint32_t RTEmbreeSceneManager::registerGeometryFromBuffer(
+    const float *vertices, uint32_t nVertices, const uint32_t *indexes,
+    uint32_t nIndexes, uint32_t registerId) {
+
+  auto pGeometryScene = std::make_unique<RTEmbreeGeometryScene>(
+      _mainDevice, RTC_GEOMETRY_TYPE_TRIANGLE, vertices, nVertices, indexes,
+      nIndexes);
+  _geometrySceneLibrary.push_back(std::move(pGeometryScene));
+
+  if (registerId == static_cast<uint32_t>(-1)) {
+    USE_LOGGING("Registering untracked geometry");
+    return -1;
+  }
+  _geometryLibraryIdMap.insert({registerId, _geometrySceneLibrary.size() - 1});
+
+  return registerId;
+}
+
 uint32_t RTEmbreeSceneManager::instanceGeometryFromLibrary(
     uint32_t geometrySceneId, AffineTransformMatrix transform,
     uint32_t registerId) {
@@ -95,7 +112,8 @@ uint32_t RTEmbreeSceneManager::instanceGeometryFromLibrary(
 
   _sceneInstanceIdMap.insert({registerId, geometryIdInMainScene});
 
-  USE_LOGGING("Registered instance with id: " << registerId);
+  USE_LOGGING("Registered instance with id: " << registerId << " - "
+                                              << geometryIdInMainScene);
   return registerId;
 }
 
@@ -120,7 +138,8 @@ RTEmbreeSceneManager::addSoundEmitterSphere(Vector3 topLevelScenePosition,
   _emitterSphereExternalIdMap.insert({registerId, emitterId});
   _emitterSphereInternalIdSet.insert(emitterId);
 
-  USE_LOGGING("Added emitter sphere with registered id: " << registerId);
+  USE_LOGGING("Added emitter sphere with registered id: " << registerId << " - "
+                                                          << emitterId);
 
   return registerId;
 }

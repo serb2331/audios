@@ -27,8 +27,10 @@ lib_sources = [
   'src/filtering/audio_filtering_GainAudioFilter_s.cpp',
   'src/ray-tracing/ray_tracer_RTEmbreeFacade_s.cpp',
   'src/ray-tracing/scene/RTEmbreeSceneManager_s.cpp',
-  'src/ray-tracing/geometry/RTEmbreeGeometry_s.cpp',
-  'src/ray-tracing/rendering/RTEmbreeRenderingManager_s.cpp'
+  'src/ray-tracing/geometry/RTEmbreeGeometryScene_s.cpp',
+  'src/ray-tracing/rendering/RTEmbreeRenderingManager_s.cpp',
+  'src/audio-rendering/delay-line/DelayLine_s.cpp',
+  'src/audio-rendering/audio_rendering_AudiosRenderer_s.cpp'
 ]
 
 exec_sources = [
@@ -37,11 +39,14 @@ exec_sources = [
 
 audios = shared_library('audios', lib_sources, 
   include_directories: [include_private, include_public], 
-  dependencies: embree_dep, 
+  dependencies: [embree_dep], 
   gnu_symbol_visibility : 'hidden', 
   cpp_args : '-DAUDIOS_BUILD_LIBRARY',
-  install: true
+  install: true,
+  install_dir: 'lib'
 )
+
+install_subdir('include', install_dir: 'include', strip_directory: true)
 
 audios_dependency = declare_dependency(
   link_with: audios, 

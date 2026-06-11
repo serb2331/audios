@@ -35,8 +35,36 @@ typedef struct alignas(16) AUDIOS_EXPORT Vector3 {
   }
 
   Vector3 normalize() const {
-    float d = std::sqrt(x * x + y * y + z * z);
+    float d = this->length();
     return {x / d, y / d, z / d, pad};
+  }
+
+  float length() const { return std::sqrt(x * x + y * y + z * z); }
+
+  Vector3 toPolar() const
+  {
+    Vector3 polar;
+
+    // Calculate the distance from the origin
+    polar.x = std::sqrt(x * x + y * y + z * z);
+
+    // Handle the edge case where the vector is exactly at the origin
+    if (polar.x == 0.0f) {
+      polar.y = 0.0f;
+      polar.z = 0.0f;
+      return polar;
+    }
+
+    // Calculate Azimuth (angle in XZ plane).
+    // atan2(z, x) makes +x the 0-angle (front).
+    polar.y = std::atan2(z, x);
+
+    // Calculate Elevation (angle from XZ plane).
+    // We use the horizontal distance to ensure numerical stability.
+    float horizontalDistance = std::sqrt(x * x + z * z);
+    polar.z = std::atan2(y, horizontalDistance);
+
+    return polar;
   }
 
 } Vector3;

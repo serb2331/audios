@@ -3,7 +3,7 @@
 #include "_external/private_embree.h"
 #include "audios/geometry.h"
 #include "private_macros.h"
-#include "ray-tracing/geometry/RTEmbreeGeometry_p.h"
+#include "ray-tracing/geometry/RTEmbreeGeometryScene_p.h"
 #include <cstdint>
 #include <memory>
 #include <type_traits>
@@ -33,6 +33,10 @@ public:
 
   uint32_t registerGeometryFromBinaryFile(std::string filePath,
                                           uint32_t registerId);
+  uint32_t registerGeometryFromBuffer(const float *vertices, uint32_t nVertices,
+                                      const uint32_t *indexes,
+                                      uint32_t nIndexes, uint32_t registerId);
+
   uint32_t instanceGeometryFromLibrary(uint32_t geometrySceneId,
                                        AffineTransformMatrix transform,
                                        uint32_t registerId);

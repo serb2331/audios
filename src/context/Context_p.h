@@ -1,5 +1,6 @@
 #pragma once
 
+#include "audios/configuration.h"
 #include <cstdint>
 #include <iostream> // IWYU pragma: keep
 
@@ -14,6 +15,8 @@ private:
   uint32_t _renderingRayCount = 100;
   uint32_t _maxBounceCount = 100;
 
+  LogCallback _loggingCallback;
+
 public:
   static AudiosContext &GetInstance();
 
@@ -22,6 +25,8 @@ public:
 
   void setLogging(bool loggingValue);
   bool getLogging();
+  void setLogCallback(LogCallback callback);
+  LogCallback getLogCallback();
 
   void setBufferFrameCount(uint32_t size);
   uint32_t getBufferFrameCount();

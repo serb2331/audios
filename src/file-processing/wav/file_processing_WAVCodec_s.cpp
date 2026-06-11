@@ -152,6 +152,9 @@ struct WAVAudioFileEncoder::WAVAudioFileEncoderImpl {
   std::string filePath = "";
 };
 
+WAVAudioFileEncoder::WAVAudioFileEncoder()
+    : _impl(std::make_unique<WAVAudioFileEncoderImpl>()) {}
+
 WAVAudioFileFormat WAVAudioFileEncoder::DefaultDataFormat() {
   // To be moved to context singleton
   return {
@@ -216,6 +219,9 @@ bool WAVAudioFileEncoder::initFile(std::string filePath, const void *format) {
 
   _impl->isFileInitialized = true;
   _impl->filePath = filePath;
+
+  USE_LOGGING("Successfully opened file \"" << _impl->filePath
+                                          << "\" for writing WAV data");
   return true;
 }
 

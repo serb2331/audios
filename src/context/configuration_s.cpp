@@ -18,4 +18,8 @@ uint32_t Configuration::getBufferFrameCount() {
   return AudiosContext::GetInstance().getBufferFrameCount();
 }
 
+void Configuration::setLogCallback(LogCallback callback) {
+  AudiosContext::GetInstance().setLogCallback(callback);
+}
+
 } // namespace audios

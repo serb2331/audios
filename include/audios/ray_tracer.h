@@ -6,6 +6,21 @@
 
 namespace audios {
 
+struct alignas(16) AcousticRayTraceResult {
+  float dist;
+  float en;
+  float freq;
+  uint32_t bounceCount;
+  Vector3 lastNormal;
+  Vector3 startDirection;
+  Vector3 finalDirection;
+  uint32_t hitEmitterId;
+};
+
+static constexpr AcousticRayTraceResult INVALID_RESULT = {
+    -1.0f, // or std::numeric_limits<float>::infinity()
+    0.0f,  0.0f, 0, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, 0};
+
 class AUDIOS_EXPORT RTEmbreeFacade {
 private:
   struct RTEFacadeImpl;
@@ -23,6 +38,10 @@ public:
 
   uint32_t registerGeometryFromBinaryFile(std::string filePath,
                                           uint32_t registerId);
+
+  uint32_t registerGeometryFromBuffer(const float *vertices, uint32_t nVertices,
+                                      const uint32_t *indexes,
+                                      uint32_t nIndexes, uint32_t registerId);
   uint32_t instanceGeometryById(uint32_t geometrySceneId,
                                 AffineTransformMatrix transform,
                                 uint32_t instanceRegisterId);
@@ -31,7 +50,10 @@ public:
   uint32_t addSoundEmitterSphere(Vector3 topLevelScenePosition, float radius,
                                  uint32_t registerId);
   void testMainSceneRayTrace();
-  void renderMainScene(Vector3 listenerPosition);
+  uint32_t getTracingRayCount();
+  uint32_t renderMainScene(Vector3 listenerPosition,
+                           AcousticRayTraceResult *resultBuffer,
+                           uint32_t rayCount);
 };
 
 } // namespace audios
