@@ -6,6 +6,13 @@
 
 namespace audios {
 
+auto getTopLevelHitId = [](const RTCRayHit &rh) -> uint32_t {
+  if (rh.hit.instID[0] != RTC_INVALID_GEOMETRY_ID) {
+    return rh.hit.instID[0]; // instanced geometry — use instance id
+  }
+  return rh.hit.geomID; // direct geometry — geomID is top-level
+};
+
 void RTEmbreeRenderingManager::_setupRayForTrace(RTCRayHit &rh,
                                                  Vector3 newStart,
                                                  Vector3 newDir) {
@@ -132,10 +139,11 @@ RTEmbreeRenderingManager::renderScene(RTCScene scene, Vector3 listenerPosition,
       Vector3 normal(rh.hit.Ng_x, rh.hit.Ng_y, rh.hit.Ng_z, 0.0f);
       normal = normal.normalize();
 
-      if (emitterIds.contains(rh.hit.geomID)) {
+      uint32_t hitId = getTopLevelHitId(rh);
+
+      if (emitterIds.contains(hitId)) {
         // USE_LOGGING("Ray hit emitter sphere with id: "
-        //             << rh.hit.geomID << " after " << c.bounceCount
-        //             << " bounces");
+        //             << hitId << " after " << c.bounceCount << " bounces");
         rayArrived = true;
         res = {c.dist,
                c.en,
@@ -144,7 +152,7 @@ RTEmbreeRenderingManager::renderScene(RTCScene scene, Vector3 listenerPosition,
                normal,
                res.startDirection,
                rhDirection.normalize(),
-               rh.hit.geomID};
+               hitId};
         continue;
       }
 

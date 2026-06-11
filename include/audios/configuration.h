@@ -1,9 +1,11 @@
 #pragma once
 
-#include "include/audios/export.h"
+#include "audios/export.h"
 #include <cstdint>
 
 namespace audios {
+
+typedef void (*LogCallback)(const char *);
 
 class AUDIOS_EXPORT Configuration {
 public:
@@ -11,6 +13,7 @@ public:
 
   static void setLogging(bool loggingValue);
   static bool isLoggingEnabled();
+  static void setLogCallback(LogCallback callback);
 
   static void setBufferFrameCount(uint32_t size);
   static uint32_t getBufferFrameCount();

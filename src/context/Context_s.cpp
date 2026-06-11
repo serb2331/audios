@@ -1,4 +1,5 @@
 #include "Context_p.h"
+#include "audios/configuration.h"
 #include "utils/random_p.h"
 
 namespace audios {
@@ -13,6 +14,12 @@ AudiosContext &AudiosContext::GetInstance() {
 void AudiosContext::setLogging(bool loggingValue) { _logging = loggingValue; }
 
 bool AudiosContext::getLogging() { return _logging; }
+
+void AudiosContext::setLogCallback(LogCallback callback) {
+  _loggingCallback = callback;
+}
+
+LogCallback AudiosContext::getLogCallback() { return _loggingCallback; }
 
 void AudiosContext::setBufferFrameCount(uint32_t size) {
   _defaultBufferFrameCount = size;

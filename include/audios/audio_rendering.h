@@ -40,6 +40,9 @@ public:
 
   void processAudioBuffer(const float *inputBuffer, float *outputBuffer,
                           uint32_t numFrames);
+
+  void processAudioBufferStereo(const float *inputBuffer, float *outputLeft,
+                                float *outputRight, uint32_t numFrames);
 };
 
 } // namespace audios

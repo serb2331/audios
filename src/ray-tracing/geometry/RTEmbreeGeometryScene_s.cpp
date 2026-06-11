@@ -46,7 +46,7 @@ RTEmbreeGeometryScene::RTEmbreeGeometryScene(
   _pInstanceScene.reset(rtcNewScene(device));
 
   rtcSetSharedGeometryBuffer(_pGeometry.get(), RTC_BUFFER_TYPE_VERTEX, 0,
-                             RTC_FORMAT_FLOAT3, vertexBuffer, 0, 12,
+                             RTC_FORMAT_FLOAT3, vertexBuffer, 0, 16,
                              vertexCount);
   USE_EMBREE_DEVICE_ERROR_LOG(device,
                               "Printing error after setting vertex buffer:");

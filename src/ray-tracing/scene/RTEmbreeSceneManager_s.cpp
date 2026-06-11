@@ -112,7 +112,8 @@ uint32_t RTEmbreeSceneManager::instanceGeometryFromLibrary(
 
   _sceneInstanceIdMap.insert({registerId, geometryIdInMainScene});
 
-  USE_LOGGING("Registered instance with id: " << registerId);
+  USE_LOGGING("Registered instance with id: " << registerId << " - "
+                                              << geometryIdInMainScene);
   return registerId;
 }
 
@@ -137,7 +138,8 @@ RTEmbreeSceneManager::addSoundEmitterSphere(Vector3 topLevelScenePosition,
   _emitterSphereExternalIdMap.insert({registerId, emitterId});
   _emitterSphereInternalIdSet.insert(emitterId);
 
-  USE_LOGGING("Added emitter sphere with registered id: " << registerId);
+  USE_LOGGING("Added emitter sphere with registered id: " << registerId << " - "
+                                                          << emitterId);
 
   return registerId;
 }

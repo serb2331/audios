@@ -42,7 +42,8 @@ audios = shared_library('audios', lib_sources,
   dependencies: [embree_dep], 
   gnu_symbol_visibility : 'hidden', 
   cpp_args : '-DAUDIOS_BUILD_LIBRARY',
-  install: true
+  install: true,
+  install_dir: 'lib'
 )
 
 install_subdir('include', install_dir: 'include', strip_directory: true)
