@@ -347,7 +347,7 @@ void AudiosRenderer::processAudioBufferStereo(const float *inputBuffer,
         continue;
       }
 
-      // --- Hermite interpolation (identical to your existing code) ---
+      // --- Hermite interpolation ---
       float readPos = dl.writeIndex - dl.currentDelaySamples;
       while (readPos < 0.0f)
         readPos += dlBufferSize;
@@ -370,7 +370,6 @@ void AudiosRenderer::processAudioBufferStereo(const float *inputBuffer,
 
       // ── Constant-power pan from directionOfArrival ────────────────
       // directionOfArrival.x is left/right in listener space (-1..+1).
-      // Use cos/sin pan law for equal power at center.
       float panX = std::clamp(dl.shared.directionOfArrival.x, -1.0f, 1.0f);
       float panAngle =
           (panX + 1.0f) * 0.5f * (std::numbers::pi * 0.5f); // 0..π/2
