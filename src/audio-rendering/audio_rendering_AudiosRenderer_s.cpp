@@ -3,6 +3,7 @@
 #include "private_macros.h"
 #include <algorithm>
 #include <atomic>
+#include <cmath>
 #include <limits>
 #include <memory>
 #include <numbers>
@@ -21,7 +22,8 @@ struct AudiosRenderer::AudiosRendererImpl {
 
   std::vector<RayDelayLineData>
   processDelayLineDataFromResults(AcousticRayTraceResult *rayTraceResult,
-                                  uint32_t resultCount);
+                                  uint32_t resultCount,
+                                  Vector3 listenerDirection);
   void updateDelayLinesWithNewClosestMatch(
       std::vector<RayDelayLineData> newDelayLines);
 
@@ -54,7 +56,10 @@ AudiosRenderer::AudiosRendererImpl::AudiosRendererImpl(Configuration conf)
 
 std::vector<RayDelayLineData>
 AudiosRenderer::AudiosRendererImpl::processDelayLineDataFromResults(
-    AcousticRayTraceResult *rayTraceResult, uint32_t resultCount) {
+    AcousticRayTraceResult *rayTraceResult, uint32_t resultCount,
+    Vector3 listenerDirection) {
+  Vector3 polarListenerDirection = listenerDirection.toPolar();
+  // use polarListenerDirection.y -> azimuth for rotating
 
   std::vector<RayDelayLineData> delayLineData;
   delayLineData.reserve(resultCount);
@@ -74,7 +79,17 @@ AudiosRenderer::AudiosRendererImpl::processDelayLineDataFromResults(
 
     data.targetGain = distanceAttenuation * ray.en / std::sqrt(delayLineCount);
 
-    data.directionOfArrival = ray.startDirection;
+    // rotate start direction of ray
+    Vector3 rotatedStartDirection;
+    rotatedStartDirection.x =
+        ray.startDirection.x * std::cos(polarListenerDirection.y) +
+        ray.startDirection.z * std::sin(polarListenerDirection.y);
+    rotatedStartDirection.y = ray.startDirection.y;
+    rotatedStartDirection.z =
+        ray.startDirection.z * std::cos(polarListenerDirection.y) -
+        ray.startDirection.x * std::sin(polarListenerDirection.y);
+
+    data.directionOfArrival = rotatedStartDirection;
 
     if (data.targetDelaySamples < sampleRate * 2)
       delayLineData.push_back(data);
@@ -176,12 +191,13 @@ AudiosRenderer::AudiosRenderer(Configuration conf)
 AudiosRenderer::~AudiosRenderer() = default;
 
 void AudiosRenderer::processTracingResults(
-    AcousticRayTraceResult *rayTraceResult, uint32_t resultCount) {
+    AcousticRayTraceResult *rayTraceResult, uint32_t resultCount,
+    Vector3 listenerDirection) {
   USE_LOGGING("Processing tracing results ("
               << resultCount << ") to format DelayLines of renderer");
 
-  auto delayLineData =
-      _impl->processDelayLineDataFromResults(rayTraceResult, resultCount);
+  auto delayLineData = _impl->processDelayLineDataFromResults(
+      rayTraceResult, resultCount, listenerDirection);
 
   // for (auto dld : delayLineData) {
   //   USE_LOGGING("DLD: " << dld.targetDelaySamples << " " << dld.targetGain
@@ -368,11 +384,9 @@ void AudiosRenderer::processAudioBufferStereo(const float *inputBuffer,
       float delayedSample =
           (((a * fraction) + b) * fraction + c) * fraction + y1;
 
-      // ── Constant-power pan from directionOfArrival ────────────────
-      // directionOfArrival.x is left/right in listener space (-1..+1).
-      float panX = std::clamp(dl.shared.directionOfArrival.x, -1.0f, 1.0f);
+      float panZ = std::clamp(dl.shared.directionOfArrival.z, -1.0f, 1.0f);
       float panAngle =
-          (panX + 1.0f) * 0.5f * (std::numbers::pi * 0.5f); // 0..π/2
+          (panZ + 1.0f) * 0.5f * (std::numbers::pi * 0.5f); // 0..π/2
       float panL = std::cos(panAngle);
       float panR = std::sin(panAngle);
 
