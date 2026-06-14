@@ -37,6 +37,10 @@ exec_sources = [
   'exec/main.cpp'
 ]
 
+exec2_sources = [
+  'exec/main2.cpp'
+]
+
 audios = shared_library('audios', lib_sources, 
   include_directories: [include_private, include_public], 
   dependencies: [embree_dep], 
@@ -55,5 +59,9 @@ audios_dependency = declare_dependency(
 
 # maybe remove the exec dependency on embree
 exec = executable('app', exec_sources, 
+  dependencies: [audios_dependency]
+)
+
+exec2 = executable('app2', exec2_sources, 
   dependencies: [audios_dependency]
 )

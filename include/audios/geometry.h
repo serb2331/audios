@@ -57,8 +57,10 @@ typedef struct alignas(16) AUDIOS_EXPORT Vector3 {
 
     // Calculate Azimuth (angle in XZ plane).
     // atan2(z, x) makes +x the 0-angle (front).
-    polar.y = std::atan2(z, x);
-
+    // and z go to the right when looking from a positive y (from above)
+    polar.y = std::atan2(-z, x);
+    // resulting azimuth is 
+    
     // Calculate Elevation (angle from XZ plane).
     // We use the horizontal distance to ensure numerical stability.
     float horizontalDistance = std::sqrt(x * x + z * z);

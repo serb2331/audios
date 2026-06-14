@@ -1,3 +1,4 @@
+#include "audios/geometry.h"
 #include <audios.h>
 #include <iostream>
 #include <stdio.h>
@@ -9,6 +10,19 @@
 static void setupProject() {
   audios::Configuration::setLogging(true);
   audios::Configuration::setBufferFrameCount(512);
+}
+
+void interleaveStereo(const float *const pLeft, const float *const pRight,
+                      float *const pInterleaved, std::size_t totalFrames) {
+  // Basic safety check
+  if (!pLeft || !pRight || !pInterleaved) {
+    return;
+  }
+
+  for (std::size_t i = 0; i < totalFrames; ++i) {
+    pInterleaved[2 * i] = pLeft[i];      // Even index: Left channel
+    pInterleaved[2 * i + 1] = pRight[i]; // Odd index: Right channel
+  }
 }
 
 int main(int argc, char **argv) {
@@ -25,13 +39,16 @@ int main(int argc, char **argv) {
   audios::WAVAudioFileDecoder dec;
   dec.initFile("sounds/full-track.wav");
   auto encFormat = dec.getDataFormat();
+  encFormat.channels = 2;
   uint32_t channels = encFormat.channels;
 
-  std::vector<float> wavReadBuffer(512 * channels);
-  std::vector<float> wavWriteBuffer(512 * channels);
+  std::vector<float> wavReadBuffer(512 * dec.getDataFormat().channels);
+  std::vector<float> wavWriteBufferL(512 * (channels / 2));
+  std::vector<float> wavWriteBufferR(512 * (channels / 2));
+  std::vector<float> wavWriteBufferInterleaved(512 * channels);
 
   audios::WAVAudioFileEncoder enc;
-  enc.initFile("sounds/writtenWAV-track.wav", &encFormat);
+  enc.initFile("sounds/writtenWAV-track2.wav", &encFormat);
 
   // setup rendering geometry
 
@@ -51,6 +68,8 @@ int main(int argc, char **argv) {
   audios::Vector3 listenerPosition = {0.5, 0.5, 0.0, 0};
   audios::Vector3 listenerRotation = audios::Vector3{-1.0, 0.0, 0.0, 0.0};
 
+  ///
+
   std::vector<audios::AcousticRayTraceResult> rayResults(rayCount);
   uint32_t resultCount =
       facade.renderMainScene(listenerPosition, rayResults.data(), rayCount);
@@ -60,7 +79,8 @@ int main(int argc, char **argv) {
   int i = 1;
   uint32_t nrFramesRead;
   while ((nrFramesRead = dec.readFrames(wavReadBuffer.data(), 512)) == 512) {
-    std::cout << "Number of read frames: " << i * 512 << "\n";
+    std::cout << "Number of read frames: " << i * 512 << " " << nrFramesRead
+              << "\n";
     if (i % 6 == 0) {
       listenerPosition =
           listenerPosition + audios::Vector3{0.01, 0.0, 0.0, 0.0};
@@ -69,24 +89,26 @@ int main(int argc, char **argv) {
       renderer.processTracingResults(rayResults.data(), resultCount,
                                      listenerRotation);
     }
-    renderer.processAudioBuffer(wavReadBuffer.data(), wavWriteBuffer.data(),
-                                nrFramesRead * channels);
-    enc.writeFrames(wavWriteBuffer.data(), nrFramesRead);
+    renderer.processAudioBufferStereo(wavReadBuffer.data(),
+                                      wavWriteBufferL.data(),
+                                      wavWriteBufferR.data(), nrFramesRead);
+
+    // interleave L and R
+    interleaveStereo(wavWriteBufferL.data(), wavWriteBufferR.data(),
+                     wavWriteBufferInterleaved.data(), 512);
+    enc.writeFrames(wavWriteBufferInterleaved.data(), nrFramesRead);
     i++;
   }
 
   if (nrFramesRead) {
-    if (i % 10 == 0) {
-      listenerPosition =
-          listenerPosition + audios::Vector3{0.01, 0.0, 0.0, 0.0};
-      resultCount =
-          facade.renderMainScene(listenerPosition, rayResults.data(), rayCount);
-      renderer.processTracingResults(rayResults.data(), resultCount,
-                                     listenerRotation);
-    }
-    renderer.processAudioBuffer(wavReadBuffer.data(), wavWriteBuffer.data(),
-                                nrFramesRead * channels);
-    enc.writeFrames(wavWriteBuffer.data(), nrFramesRead);
+    renderer.processAudioBufferStereo(wavReadBuffer.data(),
+                                      wavWriteBufferL.data(),
+                                      wavWriteBufferR.data(), nrFramesRead);
+
+    // interleave L and R
+    interleaveStereo(wavWriteBufferL.data(), wavWriteBufferR.data(),
+                     wavWriteBufferInterleaved.data(), nrFramesRead);
+    enc.writeFrames(wavWriteBufferInterleaved.data(), nrFramesRead);
   }
 
   audios::Vector3 a = {1.0, 0.0, 1.0, 0.0};

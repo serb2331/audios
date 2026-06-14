@@ -36,7 +36,7 @@ public:
   ~AudiosRenderer();
 
   void processTracingResults(AcousticRayTraceResult *resultBuffer,
-                             uint32_t resultCount);
+                             uint32_t resultCount, Vector3 listenerDirection);
 
   void processAudioBuffer(const float *inputBuffer, float *outputBuffer,
                           uint32_t numFrames);
